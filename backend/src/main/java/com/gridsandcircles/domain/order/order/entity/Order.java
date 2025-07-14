@@ -9,5 +9,4 @@ public class Order {
     private Timestamp createAt;
     private boolean deliveryStatus;
     private boolean orderStatus;
-
 }
