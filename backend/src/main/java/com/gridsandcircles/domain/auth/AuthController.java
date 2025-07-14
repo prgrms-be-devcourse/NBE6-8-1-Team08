@@ -1,4 +1,4 @@
-package com.example.gridsandcircles.auth;
+package com.gridsandcircles.domain.auth;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
