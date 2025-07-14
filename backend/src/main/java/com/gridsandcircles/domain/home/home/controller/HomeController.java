@@ -1,14 +1,14 @@
-package com.example.gridsandcircles;
-
-import static org.springframework.http.MediaType.TEXT_HTML_VALUE;
+package com.gridsandcircles.domain.home.home.controller;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static org.springframework.http.MediaType.TEXT_HTML_VALUE;
+
 @RestController
 @Hidden
-public class MainController {
+public class HomeController {
 
   @GetMapping(value = "/", produces = TEXT_HTML_VALUE)
   public String root() {
