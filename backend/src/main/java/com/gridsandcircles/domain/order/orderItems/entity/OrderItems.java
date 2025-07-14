@@ -6,12 +6,13 @@ import lombok.*;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-@Entity
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Entity
 public class OrderItems {
     @Id
     @GeneratedValue(strategy = IDENTITY)

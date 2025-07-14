@@ -11,12 +11,13 @@ import java.util.List;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-@Entity
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Entity
 @Table(name = "orders")
 public class Order {
     @Id
@@ -40,5 +41,4 @@ public class Order {
         orderItems.add(items);
         items.setOrder(this);
     }
-
 }
