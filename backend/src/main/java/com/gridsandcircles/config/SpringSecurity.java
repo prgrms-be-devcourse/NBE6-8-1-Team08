@@ -18,7 +18,8 @@ public class SpringSecurity {
         .csrf(AbstractHttpConfigurer::disable)
         .formLogin(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**", "/").permitAll()
+            .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**", "/",
+                "/admin/signup").permitAll()
             .anyRequest().authenticated()
         )
         .headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin));
