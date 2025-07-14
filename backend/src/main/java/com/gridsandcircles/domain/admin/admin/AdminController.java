@@ -6,6 +6,8 @@ import static org.springframework.http.HttpStatus.CREATED;
 
 import com.gridsandcircles.global.ApiResponse;
 import com.gridsandcircles.global.ServiceException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/admin")
+@Tag(name = "AdminController", description = "관리자 API")
 public class AdminController {
 
   private final AdminService adminService;
 
   @PostMapping("/signup")
+  @Operation(summary = "회원 가입")
   public ResponseEntity<ApiResponse<AdminResponseDto>> signup(
       @Valid @RequestBody AdminRequestDto adminRequestDto
   ) {
