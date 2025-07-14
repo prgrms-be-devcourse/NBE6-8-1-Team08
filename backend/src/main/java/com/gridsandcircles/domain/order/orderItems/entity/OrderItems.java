@@ -18,9 +18,9 @@ public class OrderItems {
     @GeneratedValue(strategy = IDENTITY)
     private Integer orderItemId;
 
-    private int orderCount;
-
     private Integer productId;
+
+    private int orderCount;
 
     @ManyToOne
     @JoinColumn(name = "order_id")

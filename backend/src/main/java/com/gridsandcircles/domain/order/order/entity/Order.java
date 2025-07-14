@@ -31,8 +31,9 @@ public class Order {
     @CreationTimestamp
     private Timestamp createdAt;
 
-    private boolean deliveryStatus;
     private boolean orderStatus;
+
+    private boolean deliveryStatus;
 
     @OneToMany(mappedBy="order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<OrderItems> orderItems = new ArrayList<>();
