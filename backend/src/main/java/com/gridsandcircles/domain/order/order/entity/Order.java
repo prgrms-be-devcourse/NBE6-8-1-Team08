@@ -17,6 +17,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -27,7 +28,7 @@ public class Order {
     private String address;
 
     @CreationTimestamp
-    private Timestamp createAt;
+    private Timestamp createdAt;
 
     private boolean deliveryStatus;
     private boolean orderStatus;
