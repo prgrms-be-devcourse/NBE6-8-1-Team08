@@ -5,8 +5,8 @@
 프론트엔드(Front-End)와 백엔드(Back-End) 작업을 명확히 구분하기 위해 브랜치 이름에 `[FE]`, `[BE]` 접두사를 사용하기
 
 - 예시:  
-  - `[FE] feature/login-ui`  
-  - `[BE] fix/user-auth`
+  - `fe/feature/login-ui`  
+  - `be/fix/user-auth`
 
 ---
 
