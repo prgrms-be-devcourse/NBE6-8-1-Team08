@@ -10,6 +10,4 @@ public class Product {
     private String description;
 
     private String productImage;
-
 }
-//product
