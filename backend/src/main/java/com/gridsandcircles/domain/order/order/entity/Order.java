@@ -35,6 +35,7 @@ public class Order {
     private boolean deliveryStatus;
 
     @OneToMany(mappedBy="order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @Builder.Default //필드의 기본값(default value)을 지정
     private List<OrderItems> orderItems = new ArrayList<>();
 
     public void addOrderItems(OrderItems items) {
