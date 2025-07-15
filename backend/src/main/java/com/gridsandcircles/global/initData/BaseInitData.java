@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @RequiredArgsConstructor
 @Configuration
 public class BaseInitData {
+
     private final OrderService orderService;
     private final OrderItemsService orderItemsService;
     private final ProductService productService;
@@ -52,6 +53,7 @@ public class BaseInitData {
         orderService.createOrder(order2);
         productService .createProduct(product);
         orderItemsService.createOrderItem(orderItem);
+
         System.out.println("주문개수:"+orderService.count());
         orderService.deleteOrder(1);
         System.out.println("주문개수:"+orderService.count());
