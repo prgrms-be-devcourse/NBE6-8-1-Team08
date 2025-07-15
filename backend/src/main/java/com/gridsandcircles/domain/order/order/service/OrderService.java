@@ -5,6 +5,8 @@ import com.gridsandcircles.domain.order.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -12,6 +14,10 @@ public class OrderService {
 
     public long count() {
         return orderRepository.count();
+    }
+
+    public List<Order> findAll() {
+        return orderRepository.findAll();
     }
 
     public void createOrder(Order order){

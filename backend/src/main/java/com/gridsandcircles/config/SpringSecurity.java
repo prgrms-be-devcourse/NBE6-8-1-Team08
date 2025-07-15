@@ -23,6 +23,7 @@ public class SpringSecurity {
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**", "/",
                 "/admin/signup", "/auth/login").permitAll()
+
             .anyRequest().authenticated()
         )
         .headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin))

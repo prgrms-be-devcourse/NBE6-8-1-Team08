@@ -1,11 +1,19 @@
 package com.gridsandcircles.domain.order.order.dto;
 
-import com.gridsandcircles.domain.order.orderItems.entity.OrderItems;
+import com.gridsandcircles.domain.order.order.entity.Order;
+import lombok.Data;
 
-import java.util.List;
-
+@Data
 public class OrderDto {
+    private Integer orderId;
     private String email;
     private String address;
-    private List<OrderItems> orderItems;
+
+
+    public OrderDto(Order order) {
+        this.orderId = order.getOrderId();
+        this.email = order.getEmail();
+        this.address = order.getAddress();
+
+    }
 }
