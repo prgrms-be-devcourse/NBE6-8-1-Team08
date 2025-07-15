@@ -14,7 +14,7 @@ public class OrderItemsService {
         return orderItemsRepository.count();
     }
 
-    public void createOrder(OrderItems orderItems){
+    public void createOrderItem(OrderItems orderItems){
         orderItemsRepository.save(orderItems);
     }
 

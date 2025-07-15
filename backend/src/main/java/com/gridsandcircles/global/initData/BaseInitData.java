@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @RequiredArgsConstructor
-//@Profile("!test") //테스트 환경
 
 public class BaseInitData {
     private final OrderService orderService;
@@ -54,7 +53,7 @@ public class BaseInitData {
         orderService.createOrder(order1);
         orderService.createOrder(order2);
         productService .createProduct(product);
-        orderItemsService.createOrder(orderItem);
+        orderItemsService.createOrderItem(orderItem);
         System.out.println("주문개수:"+orderService.count());
         orderService.deleteOrder(1);
         System.out.println("주문개수:"+orderService.count());
