@@ -1,14 +1,10 @@
 package com.gridsandcircles.domain.auth;
 
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
 
-@Getter
-public class LoginRequestDto {
+public record LoginRequestDto(
+    @Size(min = 4, max = 10) String adminId,
+    @Size(min = 10, max = 20) String password
+) {
 
-  @Size(min = 4, max = 10)
-  private String adminId;
-
-  @Size(min = 10, max = 20)
-  private String password;
 }

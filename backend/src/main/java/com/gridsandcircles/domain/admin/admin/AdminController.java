@@ -29,12 +29,12 @@ public class AdminController {
   public ResponseEntity<ApiResponse<AdminResponseDto>> signup(
       @Valid @RequestBody AdminRequestDto adminRequestDto
   ) {
-    if (!adminRequestDto.getInputPassword().equals(adminRequestDto.getConfirmPassword())) {
+    if (!adminRequestDto.inputPassword().equals(adminRequestDto.confirmPassword())) {
       throw new ServiceException(BAD_REQUEST, "Password does not match");
     }
 
     AdminResponseDto adminResponseDto = AdminMapper.toDto(
-        adminService.createAdmin(adminRequestDto.getAdminId(), adminRequestDto.getInputPassword()));
+        adminService.createAdmin(adminRequestDto.adminId(), adminRequestDto.inputPassword()));
 
     return ResponseEntity.status(CREATED)
         .body(new ApiResponse<>("Sign up successful", adminResponseDto));

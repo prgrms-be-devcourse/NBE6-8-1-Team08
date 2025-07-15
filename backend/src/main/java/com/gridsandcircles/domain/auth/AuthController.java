@@ -29,8 +29,7 @@ public class AuthController {
       @Valid @RequestBody LoginRequestDto loginRequestDto,
       HttpServletResponse response
   ) {
-    String adminId = authService.loginAdmin(loginRequestDto.getAdminId(),
-        loginRequestDto.getPassword());
+    String adminId = authService.loginAdmin(loginRequestDto.adminId(), loginRequestDto.password());
     String token = jwtUtil.generateToken(adminId);
 
     ResponseCookie cookie = ResponseCookie.from("access_token", token)
