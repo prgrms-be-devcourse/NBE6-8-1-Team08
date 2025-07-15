@@ -4,6 +4,8 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+import com.gridsandcircles.domain.order.order.entity.Order;
+import com.gridsandcircles.domain.order.order.service.OrderService;
 import com.gridsandcircles.global.ResultResponse;
 import com.gridsandcircles.global.ServiceException;
 import com.gridsandcircles.global.swagger.BadRequestApiResponse;
@@ -17,10 +19,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminController {
 
   private final AdminService adminService;
+  private final OrderService orderService;
 
   @PostMapping("/signup")
   @Operation(summary = "회원 가입")
@@ -64,4 +67,16 @@ public class AdminController {
     return ResponseEntity.status(CREATED)
         .body(new ResultResponse<>("Sign up successful", adminResponseDto));
   }
+
+  //TODO
+  @GetMapping("/orders")
+  @Transactional (readOnly = true)
+  @Operation(summary = "전체 주문 내역 조회")
+  public List<Order> getOrders() {
+    List<Order> orders = orderService.findAll();
+
+    return orders;
+  }
+
+
 }
