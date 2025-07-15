@@ -2,6 +2,7 @@ package com.gridsandcircles.global.initData;
 
 import com.gridsandcircles.domain.order.order.entity.Order;
 import com.gridsandcircles.domain.order.order.service.OrderService;
+import com.gridsandcircles.domain.order.orderItems.service.OrderItemsService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Profile;
 
 public class BaseInitData {
     private final OrderService orderService;
+    private final OrderItemsService orderItemsService;
 
     @PostConstruct
     public void init() {
@@ -31,6 +33,7 @@ public class BaseInitData {
                 .orderStatus(false)
                 .deliveryStatus(false)
                 .build();
+
 
         orderService.createOrder(order1);
         orderService.createOrder(order2);
