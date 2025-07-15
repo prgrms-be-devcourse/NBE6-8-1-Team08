@@ -1,5 +1,8 @@
 package com.gridsandcircles.global;
 
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -20,6 +23,11 @@ public class GlobalExceptionHandler {
         .collect(Collectors.joining("\n"));
 
     return ResponseEntity.badRequest().body(new ApiResponse<>(message));
+  }
+
+  @ExceptionHandler(NoSuchElementException.class)
+  public ResponseEntity<ApiResponse<Void>> handle(NoSuchElementException ex) {
+    return ResponseEntity.status(NOT_FOUND).body(new ApiResponse<>(ex.getMessage()));
   }
 
   @ExceptionHandler(ServiceException.class)

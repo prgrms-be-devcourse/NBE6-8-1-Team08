@@ -21,3 +21,7 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
+
+  # ENV
+  config:
+    import: optional:file:.env[.properties]

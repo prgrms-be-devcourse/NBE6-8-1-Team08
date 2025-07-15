@@ -36,6 +36,9 @@ out/
 ### VS Code ###
 .vscode/
 
-### DB file ###
+### DB File ###
 db_dev.mv.db
 db_dev.trace.db
+
+### Environment Variable File ###
+.env
