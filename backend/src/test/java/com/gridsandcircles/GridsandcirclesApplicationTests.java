@@ -1,4 +1,4 @@
-package com.example.gridsandcircles;
+package com.gridsandcircles;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
