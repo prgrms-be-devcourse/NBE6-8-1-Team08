@@ -1,7 +1,7 @@
 package com.gridsandcircles.domain.order.orderItems.service;
 
-import com.gridsandcircles.domain.order.order.entity.Order;
 import com.gridsandcircles.domain.order.order.repository.OrderRepository;
+import com.gridsandcircles.domain.order.orderItems.entity.OrderItems;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +14,11 @@ public class OrderItemsService {
         return orderItemsRepository.count();
     }
 
-    public void createOrder(Order order){
-        orderItemsRepository.save(order);
+    public void createOrder(OrderItems orderItems){
+        orderItemsRepository.save(orderItems);
     }
 
-    public void deleteOrder(Integer orderId){
-        orderItemsRepository.deleteById(orderId);
+    public void deleteOrder(OrderItems orderItemId){
+        orderItemsRepository.deleteById(orderItemId);
     }
 }
