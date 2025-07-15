@@ -3,7 +3,7 @@ package com.gridsandcircles.domain.admin.admin;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 
-import com.gridsandcircles.global.ApiResponse;
+import com.gridsandcircles.global.ResultResponse;
 import com.gridsandcircles.global.ServiceException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,7 +25,7 @@ public class AdminController {
 
   @PostMapping("/signup")
   @Operation(summary = "회원 가입")
-  public ResponseEntity<ApiResponse<AdminResponseDto>> signup(
+  public ResponseEntity<ResultResponse<AdminResponseDto>> signup(
       @Valid @RequestBody AdminRequestDto adminRequestDto
   ) {
     if (!adminRequestDto.inputPassword().equals(adminRequestDto.confirmPassword())) {
@@ -36,6 +36,6 @@ public class AdminController {
         adminService.createAdmin(adminRequestDto.adminId(), adminRequestDto.inputPassword()));
 
     return ResponseEntity.status(CREATED)
-        .body(new ApiResponse<>("Sign up successful", adminResponseDto));
+        .body(new ResultResponse<>("Sign up successful", adminResponseDto));
   }
 }

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<ApiResponse<Void>> handle(MethodArgumentNotValidException ex) {
+  public ResponseEntity<ResultResponse<Void>> handle(MethodArgumentNotValidException ex) {
     String message = ex.getBindingResult()
         .getAllErrors()
         .stream()
@@ -22,16 +22,16 @@ public class GlobalExceptionHandler {
         .map(error -> error.getField() + "-" + error.getCode() + "-" + error.getDefaultMessage())
         .collect(Collectors.joining("\n"));
 
-    return ResponseEntity.badRequest().body(new ApiResponse<>(message));
+    return ResponseEntity.badRequest().body(new ResultResponse<>(message));
   }
 
   @ExceptionHandler(NoSuchElementException.class)
-  public ResponseEntity<ApiResponse<Void>> handle(NoSuchElementException ex) {
-    return ResponseEntity.status(NOT_FOUND).body(new ApiResponse<>(ex.getMessage()));
+  public ResponseEntity<ResultResponse<Void>> handle(NoSuchElementException ex) {
+    return ResponseEntity.status(NOT_FOUND).body(new ResultResponse<>(ex.getMessage()));
   }
 
   @ExceptionHandler(ServiceException.class)
-  public ResponseEntity<ApiResponse<Void>> handle(ServiceException ex) {
-    return ResponseEntity.status(ex.getStatusCode()).body(new ApiResponse<>(ex.getMessage()));
+  public ResponseEntity<ResultResponse<Void>> handle(ServiceException ex) {
+    return ResponseEntity.status(ex.getStatusCode()).body(new ResultResponse<>(ex.getMessage()));
   }
 }

@@ -1,7 +1,7 @@
 package com.gridsandcircles.domain.auth;
 
 import com.gridsandcircles.domain.admin.admin.AdminResponseDto;
-import com.gridsandcircles.global.ApiResponse;
+import com.gridsandcircles.global.ResultResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,7 +25,7 @@ public class AuthController {
 
   @PostMapping("login")
   @Operation(summary = "로그인")
-  public ResponseEntity<ApiResponse<AdminResponseDto>> login(
+  public ResponseEntity<ResultResponse<AdminResponseDto>> login(
       @Valid @RequestBody LoginRequestDto loginRequestDto,
       HttpServletResponse response
   ) {
@@ -42,6 +42,6 @@ public class AuthController {
     response.addHeader("Set-Cookie", cookie.toString());
 
     return ResponseEntity.ok()
-        .body(new ApiResponse<>("Login successful", new AdminResponseDto(adminId)));
+        .body(new ResultResponse<>("Login successful", new AdminResponseDto(adminId)));
   }
 }
