@@ -1,6 +1,7 @@
 package com.gridsandcircles.domain.order.orderItems.entity;
 
 import com.gridsandcircles.domain.order.order.entity.Order;
+import com.gridsandcircles.domain.product.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,7 +18,9 @@ public class OrderItems {
     @GeneratedValue(strategy = IDENTITY)
     private Integer orderItemId;
 
-    private Integer productId;
+    @ManyToOne
+    @JoinColumn(name = "product_Id")
+    private Product product;//Integer productId에서 변경
 
     private int orderCount;
 
