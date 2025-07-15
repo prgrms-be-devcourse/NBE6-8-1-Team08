@@ -17,4 +17,4 @@ npm run dev
 
 - 기본 접속 주소: http://localhost:5173
 
-- Figma 주소: https://www.figma.com/proto/9WMFE15k7SKB5JeXGsS7hq/Grids---Circles?node-id=11-6&t=Dws2e7TTE7GQax1T-1&starting-point-node-id=11%3A6
+- Figma 주소: [https://www.figma.com/proto/9WMFE15k7SKB5JeXGsS7hq/Grids---Circles?node-id=11-6&t=Dws2e7TTE7GQax1T-1&starting-point-node-id=11%3A6](https://www.figma.com/proto/9WMFE15k7SKB5JeXGsS7hq/Grids---Circles?node-id=0-1&t=Ryy1KObQUAIWxmmV-1)
