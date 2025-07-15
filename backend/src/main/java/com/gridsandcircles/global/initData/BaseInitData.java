@@ -9,10 +9,9 @@ import org.springframework.context.annotation.Profile;
 
 @Configuration
 @RequiredArgsConstructor
-@Profile("!test")
+@Profile("!test") //테스트 환경
 
 public class BaseInitData {
-
     private final OrderService orderService;
 
     @PostConstruct
