@@ -13,12 +13,10 @@ public class ProductService {
     public long count() {
         return productRepository.count();
     }
-
     public Product createProduct(Product product){
         productRepository.save(product);
         return product;
     }
-
     public void deleteOrder(Integer productId){
         productRepository.deleteById(productId);
     }
