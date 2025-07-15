@@ -14,8 +14,9 @@ public class ProductService {
         return productRepository.count();
     }
 
-    public void createOrder(Product product){
+    public Product createProduct(Product product){
         productRepository.save(product);
+        return product;
     }
 
     public void deleteOrder(Integer productId){
