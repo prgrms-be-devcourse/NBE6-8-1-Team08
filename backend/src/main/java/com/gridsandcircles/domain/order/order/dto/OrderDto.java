@@ -9,7 +9,6 @@ public class OrderDto {
     private String email;
     private String address;
 
-
     public OrderDto(Order order) {
         this.orderId = order.getOrderId();
         this.email = order.getEmail();
