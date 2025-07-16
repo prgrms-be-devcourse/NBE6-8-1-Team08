@@ -29,7 +29,7 @@ public class Order {
     private String address;
 
     @CreationTimestamp
-    private Timestamp createdAt; // 오후 2시기준 배송일결정
+    private Timestamp createdAt;
 
     private boolean orderStatus;
 

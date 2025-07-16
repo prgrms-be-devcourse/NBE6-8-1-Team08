@@ -25,5 +25,5 @@ public class Product {
     private String productImage;
 
     @OneToMany(mappedBy = "product")
-    private List<OrderItems> orderItemsList = new ArrayList<>(); // product로 OrderItems
+    private List<OrderItems> productOrderItems = new ArrayList<>();
 }
