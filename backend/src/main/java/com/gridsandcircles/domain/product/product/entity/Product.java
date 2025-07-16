@@ -19,11 +19,11 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer productId;
-    private String name; //제품명
+    private String name; // 제품명
     private int price;
     private String description;
     private String productImage;
 
     @OneToMany(mappedBy = "product")
-    private List<OrderItems> orderItemsList = new ArrayList<>();//product로 OrderItems
+    private List<OrderItems> orderItemsList = new ArrayList<>(); // product로 OrderItems
 }

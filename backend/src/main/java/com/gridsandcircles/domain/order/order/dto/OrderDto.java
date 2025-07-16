@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class OrderDto {
+
     private Integer orderId;
     private String email;
     private String address;
@@ -13,6 +14,5 @@ public class OrderDto {
         this.orderId = order.getOrderId();
         this.email = order.getEmail();
         this.address = order.getAddress();
-
     }
 }

@@ -22,8 +22,7 @@ public class SpringSecurity {
         .formLogin(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**", "/",
-                "/admin/signup", "/auth/login").permitAll()
-
+                "/admin/signup", "/auth/login","/api/v1/orders/**").permitAll()
             .anyRequest().authenticated()
         )
         .headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin))

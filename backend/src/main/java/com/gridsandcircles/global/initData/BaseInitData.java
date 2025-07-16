@@ -10,9 +10,8 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
 @RequiredArgsConstructor
-
+@Configuration
 public class BaseInitData {
     private final OrderService orderService;
     private final OrderItemsService orderItemsService;
@@ -42,7 +41,6 @@ public class BaseInitData {
                 .description("진한 커피")
                 .productImage("image.jpg")
                 .build();
-
 
         OrderItems orderItem = OrderItems.builder()
                 .order(order1)

@@ -20,7 +20,7 @@ public class OrderItems {
 
     @ManyToOne
     @JoinColumn(name = "product_Id")
-    private Product product;//Integer productId에서 변경
+    private Product product; // Integer productId에서 변경
 
     private int orderCount;
 
