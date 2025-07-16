@@ -1,6 +1,6 @@
 package com.gridsandcircles.domain.order.order.entity;
 
-import com.gridsandcircles.domain.order.orderItems.entity.OrderItems;
+import com.gridsandcircles.domain.order.orderItem.entity.OrderItem;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -29,18 +29,18 @@ public class Order {
     private String address;
 
     @CreationTimestamp
-    private Timestamp createdAt; // 오후 2시기준 배송일결정
+    private Timestamp createdAt;
 
     private boolean orderStatus;
 
     private boolean deliveryStatus;
 
     @OneToMany(mappedBy="order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    @Builder.Default //필드의 기본값(default value)을 지정
-    private List<OrderItems> orderItems = new ArrayList<>();
+    @Builder.Default
+    private List<OrderItem> orderItems = new ArrayList<>();
 
-    public void addOrderItems(OrderItems items) {
-        orderItems.add(items);
-        items.setOrder(this);
+    public void addOrderItem(OrderItem item) {
+        orderItems.add(item);
+        item.setOrder(this);
     }
 }

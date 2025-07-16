@@ -17,7 +17,6 @@ public class ApiV1OrderController {
 
     private final OrderService orderService;
 
-    // 전체 조회기능 추가
     @GetMapping
     public List<OrderDto> getOrders() {
         List<Order> items = orderService.findAll();

@@ -1,4 +1,4 @@
-package com.gridsandcircles.domain.order.orderItems.entity;
+package com.gridsandcircles.domain.order.orderItem.entity;
 
 import com.gridsandcircles.domain.order.order.entity.Order;
 import com.gridsandcircles.domain.product.product.entity.Product;
@@ -13,7 +13,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @Builder
 @Entity
-public class OrderItems {
+public class OrderItem {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

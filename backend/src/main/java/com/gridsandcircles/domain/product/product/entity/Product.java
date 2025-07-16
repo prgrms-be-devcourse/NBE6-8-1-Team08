@@ -1,6 +1,6 @@
 package com.gridsandcircles.domain.product.product.entity;
 
-import com.gridsandcircles.domain.order.orderItems.entity.OrderItems;
+import com.gridsandcircles.domain.order.orderItem.entity.OrderItem;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,5 +25,5 @@ public class Product {
     private String productImage;
 
     @OneToMany(mappedBy = "product")
-    private List<OrderItems> orderItemsList = new ArrayList<>(); // product로 OrderItems
+    private List<OrderItem> orderItems = new ArrayList<>();
 }
