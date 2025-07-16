@@ -5,8 +5,8 @@ import com.gridsandcircles.domain.product.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Service
 @RequiredArgsConstructor
+@Service
 public class ProductService {
     private final ProductRepository productRepository;
 

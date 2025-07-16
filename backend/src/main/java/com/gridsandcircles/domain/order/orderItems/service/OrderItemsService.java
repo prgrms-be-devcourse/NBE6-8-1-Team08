@@ -5,9 +5,10 @@ import com.gridsandcircles.domain.order.orderItems.repository.OrderItemsReposito
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Service
 @RequiredArgsConstructor
+@Service
 public class OrderItemsService {
+
     private final OrderItemsRepository orderItemsRepository;
 
     public long count() {
