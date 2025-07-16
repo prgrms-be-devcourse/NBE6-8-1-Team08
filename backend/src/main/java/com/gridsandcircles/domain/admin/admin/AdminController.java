@@ -4,6 +4,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+import com.gridsandcircles.domain.order.order.dto.OrderDto;
 import com.gridsandcircles.domain.order.order.entity.Order;
 import com.gridsandcircles.domain.order.order.service.OrderService;
 import com.gridsandcircles.global.ResultResponse;
@@ -72,10 +73,13 @@ public class AdminController {
   @GetMapping("/orders")
   @Transactional (readOnly = true)
   @Operation(summary = "전체 주문 내역 조회")
-  public List<Order> getOrders() {
+  public List<OrderDto> getOrders() {
     List<Order> orders = orderService.findAll();
 
-    return orders;
+    return orders
+            .stream()
+            .map(order -> new OrderDto(order))
+            .toList();
   }
 
 

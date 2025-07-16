@@ -13,6 +13,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.test.context.support.WithMockUser;
+
 
 import java.util.List;
 
@@ -36,6 +38,7 @@ public class AdminControllerTest {
 
     @Test
     @DisplayName("모든 주문 조회")
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
     void t1() throws Exception {
         ResultActions resultActions = mvc
                 .perform(
@@ -50,7 +53,5 @@ public class AdminControllerTest {
                 .andExpect(handler().methodName("getOrders"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(orders.size()));
-
     }
-
 }
