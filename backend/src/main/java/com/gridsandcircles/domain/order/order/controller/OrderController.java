@@ -20,6 +20,6 @@ public class OrderController {
             @Valid @RequestBody OrderCreateReqBody reqBody
     ){
         OrderDto orderDto = orderService.registerOrder(num, reqBody);
-        return new RsData<>("200-1", "주문이 성공적으로 등록되었습니다.", orderDto);
+        return new RsData<>("201-1", "주문이 성공적으로 등록되었습니다.", orderDto);
     }
 }
