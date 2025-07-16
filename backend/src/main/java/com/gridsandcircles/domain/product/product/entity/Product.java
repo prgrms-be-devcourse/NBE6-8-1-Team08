@@ -19,7 +19,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer productId;
-    private String name; // 제품명 필드
+    private String name; // 제품명
     private int price;
     private String description;
     private String productImage;
