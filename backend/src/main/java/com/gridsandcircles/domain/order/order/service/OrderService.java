@@ -6,9 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
-@Service
 @RequiredArgsConstructor
+@Service
 public class OrderService {
 
     private final OrderRepository orderRepository;
