@@ -17,7 +17,7 @@ public class JwtUtil {
   private String jwtSecret;
 
   @Value("${TOKEN_EXPIRE_TIME}")
-  private long tokenExpireTime = 1000 * 60 * 60;
+  private long tokenExpireTime;
 
   private Key key;
 
