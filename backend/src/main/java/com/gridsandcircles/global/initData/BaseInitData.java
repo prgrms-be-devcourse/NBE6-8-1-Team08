@@ -2,8 +2,8 @@ package com.gridsandcircles.global.initData;
 
 import com.gridsandcircles.domain.order.order.entity.Order;
 import com.gridsandcircles.domain.order.order.service.OrderService;
-import com.gridsandcircles.domain.order.orderItems.entity.OrderItem;
-import com.gridsandcircles.domain.order.orderItems.service.OrderItemsService;
+import com.gridsandcircles.domain.order.orderItem.entity.OrderItem;
+import com.gridsandcircles.domain.order.orderItem.service.OrderItemService;
 import com.gridsandcircles.domain.product.product.entity.Product;
 import com.gridsandcircles.domain.product.product.service.ProductService;
 import jakarta.annotation.PostConstruct;
@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 public class BaseInitData {
 
     private final OrderService orderService;
-    private final OrderItemsService orderItemsService;
+    private final OrderItemService orderItemService;
     private final ProductService productService;
 
     @PostConstruct
@@ -52,7 +52,7 @@ public class BaseInitData {
         orderService.createOrder(order1);
         orderService.createOrder(order2);
         productService.createProduct(product);
-        orderItemsService.createOrderItem(orderItem);
+        orderItemService.createOrderItem(orderItem);
 
         System.out.println("주문개수:"+orderService.count());
         orderService.deleteOrder(1);

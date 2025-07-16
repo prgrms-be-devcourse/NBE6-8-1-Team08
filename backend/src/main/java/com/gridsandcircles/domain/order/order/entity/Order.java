@@ -1,6 +1,6 @@
 package com.gridsandcircles.domain.order.order.entity;
 
-import com.gridsandcircles.domain.order.orderItems.entity.OrderItem;
+import com.gridsandcircles.domain.order.orderItem.entity.OrderItem;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -39,8 +39,8 @@ public class Order {
     @Builder.Default //필드의 기본값(default value)을 지정
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    public void addOrderItems(OrderItem items) {
-        orderItems.add(items);
-        items.setOrder(this);
+    public void addOrderItem(OrderItem item) {
+        orderItems.add(item);
+        item.setOrder(this);
     }
 }

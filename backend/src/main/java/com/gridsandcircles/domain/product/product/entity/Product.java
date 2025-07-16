@@ -1,6 +1,6 @@
 package com.gridsandcircles.domain.product.product.entity;
 
-import com.gridsandcircles.domain.order.orderItems.entity.OrderItem;
+import com.gridsandcircles.domain.order.orderItem.entity.OrderItem;
 import jakarta.persistence.*;
 import lombok.*;
 
