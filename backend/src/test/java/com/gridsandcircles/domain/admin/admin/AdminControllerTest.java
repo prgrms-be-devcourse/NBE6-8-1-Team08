@@ -34,7 +34,7 @@ public class AdminControllerTest {
     @Test
     @DisplayName("모든 주문 조회")
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    void orderFindAll() throws Exception {
+    void getOrders() throws Exception {
         ResultActions resultActions = mvc
                 .perform(
                         get("/admin/orders")

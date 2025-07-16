@@ -6,6 +6,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import com.gridsandcircles.domain.order.order.dto.OrderDto;
 import com.gridsandcircles.domain.order.order.entity.Order;
+import com.gridsandcircles.domain.order.order.mapper.OrderMapper;
 import com.gridsandcircles.domain.order.order.service.OrderService;
 import com.gridsandcircles.global.ResultResponse;
 import com.gridsandcircles.global.ServiceException;
@@ -68,18 +69,25 @@ public class AdminController {
         .body(new ResultResponse<>("Sign up successful", adminResponseDto));
   }
 
-  //TODO
   @GetMapping("/orders")
-  @Transactional (readOnly = true)
   @Operation(summary = "전체 주문 내역 조회")
-  public List<OrderDto> getOrders() {
+  @ApiResponse(
+      responseCode = "200",
+      description = "전체 주문 내역 조회 성공",
+      content = @Content(
+          mediaType = APPLICATION_JSON_VALUE,
+          schema = @Schema(implementation = ResultResponse.class)
+      )
+  )
+  public ResponseEntity<ResultResponse<List<OrderDto>>> getOrders() {
     List<Order> orders = orderService.findAll();
 
-    return orders
-            .stream()
-            .map(order -> new OrderDto(order))
-            .toList();
+    List<OrderDto> orderDtos = orders
+        .stream()
+        .map(OrderMapper::toDto)
+        .toList();
+
+    return ResponseEntity.ok()
+        .body(new ResultResponse<>("전체 주문 내역 조회 성공", orderDtos));
   }
-
-
 }
