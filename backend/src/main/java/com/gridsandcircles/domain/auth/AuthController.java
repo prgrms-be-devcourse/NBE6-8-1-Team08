@@ -1,8 +1,16 @@
 package com.gridsandcircles.domain.auth;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 import com.gridsandcircles.domain.admin.admin.AdminResponseDto;
 import com.gridsandcircles.global.ResultResponse;
+import com.gridsandcircles.global.swagger.NotFoundApiResponse;
+import com.gridsandcircles.global.swagger.UnauthorizedApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -25,6 +33,25 @@ public class AuthController {
 
   @PostMapping("login")
   @Operation(summary = "로그인")
+  @ApiResponse(
+      responseCode = "200",
+      description = "로그인 성공",
+      content = @Content(
+          mediaType = APPLICATION_JSON_VALUE,
+          schema = @Schema(implementation = ResultResponse.class),
+          examples = @ExampleObject(value = """
+              {
+                "msg": "Login successful",
+                "data": {
+                  "adminId": "test"
+                }
+              }
+              """
+          )
+      )
+  )
+  @UnauthorizedApiResponse
+  @NotFoundApiResponse
   public ResponseEntity<ResultResponse<AdminResponseDto>> login(
       @Valid @RequestBody LoginRequestDto loginRequestDto,
       HttpServletResponse response

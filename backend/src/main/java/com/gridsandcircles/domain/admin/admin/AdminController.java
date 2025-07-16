@@ -2,10 +2,17 @@ package com.gridsandcircles.domain.admin.admin;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import com.gridsandcircles.global.ResultResponse;
 import com.gridsandcircles.global.ServiceException;
+import com.gridsandcircles.global.swagger.BadRequestApiResponse;
+import com.gridsandcircles.global.swagger.ConflictApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +32,25 @@ public class AdminController {
 
   @PostMapping("/signup")
   @Operation(summary = "회원 가입")
+  @ApiResponse(
+      responseCode = "201",
+      description = "회원 가입 성공",
+      content = @Content(
+          mediaType = APPLICATION_JSON_VALUE,
+          schema = @Schema(implementation = ResultResponse.class),
+          examples = @ExampleObject(value = """
+              {
+                "msg": "Sign up successful",
+                "data": {
+                  "adminId": "test"
+                }
+              }
+              """
+          )
+      )
+  )
+  @BadRequestApiResponse
+  @ConflictApiResponse
   public ResponseEntity<ResultResponse<AdminResponseDto>> signup(
       @Valid @RequestBody AdminRequestDto adminRequestDto
   ) {
