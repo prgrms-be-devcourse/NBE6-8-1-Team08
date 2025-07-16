@@ -26,9 +26,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AdminControllerTest {
 
     @Autowired
-    private AdminService adminService;
-
-    @Autowired
     private OrderService orderService;
 
     @Autowired
