@@ -14,13 +14,14 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Builder
 @Entity
 public class OrderItems {
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Integer orderItemId;
 
     @ManyToOne
     @JoinColumn(name = "product_Id")
-    private Product product; // Integer productId에서 변경
+    private Product product;
 
     private int orderCount;
 

@@ -10,6 +10,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class OrderService {
+
     private final OrderRepository orderRepository;
 
     public long count() {

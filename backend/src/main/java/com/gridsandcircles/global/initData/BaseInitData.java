@@ -51,7 +51,7 @@ public class BaseInitData {
 
         orderService.createOrder(order1);
         orderService.createOrder(order2);
-        productService .createProduct(product);
+        productService.createProduct(product);
         orderItemsService.createOrderItem(orderItem);
 
         System.out.println("주문개수:"+orderService.count());

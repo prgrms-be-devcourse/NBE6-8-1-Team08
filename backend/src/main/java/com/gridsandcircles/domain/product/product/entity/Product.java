@@ -15,10 +15,11 @@ import java.util.List;
 @Entity
 @Table(name="product")
 public class Product {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer productId;
-    private String name; // 제품명
+    private String name;
     private int price;
     private String description;
     private String productImage;
