@@ -18,7 +18,7 @@ public class ApiV1OrderController {
 
     @GetMapping
     public List<OrderDto> getOrders() {
-        List<Order> items = orderService.findAll();//전체 조회기능 추가
+        List<Order> items = orderService.findAll();//전체 조회기능
 
         return items
                 .stream()
