@@ -80,9 +80,7 @@ public class AdminController {
       )
   )
   public ResponseEntity<ResultResponse<List<OrderDto>>> getOrders() {
-    List<Order> orders = orderService.findAll();
-
-    List<OrderDto> orderDtos = orders
+    List<OrderDto> orderDtos = orderService.findAll()
         .stream()
         .map(OrderMapper::toDto)
         .toList();
