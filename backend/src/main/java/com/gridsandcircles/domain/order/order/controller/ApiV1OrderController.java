@@ -1,0 +1,29 @@
+package com.gridsandcircles.domain.order.order.controller;
+
+import com.gridsandcircles.domain.order.order.dto.OrderDto;
+import com.gridsandcircles.domain.order.order.entity.Order;
+import com.gridsandcircles.domain.order.order.service.OrderService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@RequiredArgsConstructor
+@RestController
+@RequestMapping("/api/v1/orders")
+public class ApiV1OrderController {
+
+    private final OrderService orderService;
+
+    // 전체 조회기능 추가
+    @GetMapping
+    public List<OrderDto> getOrders() {
+        List<Order> items = orderService.findAll();
+        return items
+                .stream()
+                .map(OrderDto::new)
+                .toList();
+    }
+}

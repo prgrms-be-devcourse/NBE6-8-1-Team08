@@ -1,6 +1,7 @@
 package com.gridsandcircles.domain.order.orderItems.entity;
 
 import com.gridsandcircles.domain.order.order.entity.Order;
+import com.gridsandcircles.domain.product.product.entity.Product;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,11 +14,14 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Builder
 @Entity
 public class OrderItems {
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Integer orderItemId;
 
-    private Integer productId;
+    @ManyToOne
+    @JoinColumn(name = "product_Id")
+    private Product product;
 
     private int orderCount;
 
