@@ -2,7 +2,7 @@ package com.gridsandcircles.global.initData;
 
 import com.gridsandcircles.domain.order.order.entity.Order;
 import com.gridsandcircles.domain.order.order.service.OrderService;
-import com.gridsandcircles.domain.order.orderItems.entity.OrderItems;
+import com.gridsandcircles.domain.order.orderItems.entity.OrderItem;
 import com.gridsandcircles.domain.order.orderItems.service.OrderItemsService;
 import com.gridsandcircles.domain.product.product.entity.Product;
 import com.gridsandcircles.domain.product.product.service.ProductService;
@@ -43,7 +43,7 @@ public class BaseInitData {
                 .productImage("image.jpg")
                 .build();
 
-        OrderItems orderItem = OrderItems.builder()
+        OrderItem orderItem = OrderItem.builder()
                 .order(order1)
                 .product(product)
                 .orderCount(10)

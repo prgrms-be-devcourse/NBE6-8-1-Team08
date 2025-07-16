@@ -13,7 +13,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @Builder
 @Entity
-public class OrderItems {
+public class OrderItem {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

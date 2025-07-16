@@ -1,6 +1,6 @@
 package com.gridsandcircles.domain.order.order.entity;
 
-import com.gridsandcircles.domain.order.orderItems.entity.OrderItems;
+import com.gridsandcircles.domain.order.orderItems.entity.OrderItem;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -37,9 +37,9 @@ public class Order {
 
     @OneToMany(mappedBy="order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @Builder.Default //필드의 기본값(default value)을 지정
-    private List<OrderItems> orderItems = new ArrayList<>();
+    private List<OrderItem> orderItems = new ArrayList<>();
 
-    public void addOrderItems(OrderItems items) {
+    public void addOrderItems(OrderItem items) {
         orderItems.add(items);
         items.setOrder(this);
     }
