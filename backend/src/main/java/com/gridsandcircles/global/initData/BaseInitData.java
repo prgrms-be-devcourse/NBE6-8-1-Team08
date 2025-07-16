@@ -55,7 +55,6 @@ public class BaseInitData {
         orderItemService.createOrderItem(orderItem);
 
         System.out.println("주문개수:"+orderService.count());
-        orderService.deleteOrder(1);
         System.out.println("주문개수:"+orderService.count());
         System.out.println("Order 엔티티 데이터 초기화");
     }
