@@ -19,7 +19,7 @@ public class OrderItemService {
         orderItemRepository.save(orderItem);
     }
 
-    public void deleteOrder(Integer orderItemId){
+    public void deleteOrderItem(Integer orderItemId){
         orderItemRepository.deleteById(orderItemId);
     }
 }
