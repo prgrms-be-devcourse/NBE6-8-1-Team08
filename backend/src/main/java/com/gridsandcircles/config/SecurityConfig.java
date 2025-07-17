@@ -13,7 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-public class SpringSecurity {
+public class SecurityConfig {
 
   @Bean
   SecurityFilterChain filterChain(HttpSecurity http, JwtUtil jwtUtil) throws Exception {
@@ -22,7 +22,7 @@ public class SpringSecurity {
         .formLogin(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**", "/",
-                "/admin/signup", "/auth/login","/api/v1/orders/**").permitAll()
+                "/admin/signup", "/auth/login", "/api/v1/orders/**").permitAll()
             .anyRequest().authenticated()
         )
         .headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin))
