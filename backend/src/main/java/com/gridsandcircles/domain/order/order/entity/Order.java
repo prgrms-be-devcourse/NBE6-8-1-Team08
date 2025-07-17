@@ -35,12 +35,17 @@ public class Order {
 
     private boolean deliveryStatus;
 
-    @OneToMany(mappedBy="order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy="order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     @Builder.Default
     private List<OrderItem> orderItems = new ArrayList<>();
 
     public void addOrderItem(OrderItem item) {
         orderItems.add(item);
         item.setOrder(this);
+    }
+
+    public void removeOrderItem(OrderItem orderItem) {
+        orderItems.remove(orderItem);
+        orderItem.setOrder(null);
     }
 }
