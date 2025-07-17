@@ -44,7 +44,7 @@ public class ApiV1OrderController {
         );
     }
     //브라우저로 작동확인
-    @GetMapping("/{orderId}/items/{orderItemId}")
+    @DeleteMapping("/{orderId}/items/{orderItemId}")
     @Transactional
     public ResponseEntity<RsData<Map<String, Integer>>> removeOrderItem(@PathVariable int orderId, @PathVariable int orderItemId) {
         orderService.removeOrderItem(orderId, orderItemId);
