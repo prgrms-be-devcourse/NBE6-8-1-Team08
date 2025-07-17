@@ -26,50 +26,50 @@ public class BaseInitData {
 
     if (orderService.count() == 0) {
       Order order1 = Order.builder()
-          .email("order1@example.com")
-          .address("서울")
-          .orderStatus(true)
-          .deliveryStatus(false)
-          .build();
+              .email("order1@example.com")
+              .address("서울")
+              .orderStatus(true)
+              .deliveryStatus(false)
+              .build();
 
       Order order2 = Order.builder()
-          .email("order2@example.com")
-          .address("부산")
-          .orderStatus(false)
-          .deliveryStatus(false)
-          .build();
+              .email("order2@example.com")
+              .address("부산")
+              .orderStatus(false)
+              .deliveryStatus(false)
+              .build();
 
       Product product1 = Product.builder()
-          .name("아메리카노")
-          .price(3000)
-          .description("진한 커피")
-          .productImage("image.jpg1")
-          .build();
+              .name("아메리카노")
+              .price(3000)
+              .description("진한 커피")
+              .productImage("image.jpg1")
+              .build();
 
       Product product2 = Product.builder()
-          .name("초코라떼")
-          .price(5000)
-          .description("진한 라떼")
-          .productImage("image.jpg2")
-          .build();
+              .name("초코라떼")
+              .price(5000)
+              .description("진한 라떼")
+              .productImage("image.jpg2")
+              .build();
 
       OrderItem orderItem1 = OrderItem.builder()
-          .order(order1)
-          .product(product1)
-          .orderCount(10)
-          .build();
+              .order(order1)
+              .product(product1)
+              .orderCount(10)
+              .build();
 
       OrderItem orderItem2 = OrderItem.builder()
-          .order(order1)
-          .product(product2)
-          .orderCount(20)
-          .build();
+              .order(order1)
+              .product(product2)
+              .orderCount(20)
+              .build();
 
       OrderItem orderItem3 = OrderItem.builder()
-          .order(order2)
-          .product(product2)
-          .orderCount(30)
-          .build();
+              .order(order2)
+              .product(product2)
+              .orderCount(30)
+              .build();
 
       orderService.createOrder(order1);
       orderService.createOrder(order2);
@@ -80,13 +80,6 @@ public class BaseInitData {
       orderItemService.createOrderItem(orderItem3);
 
       System.out.println("주문개수:" + orderService.count());
-
-//        Order orderToDelete = orderService.findById(1).orElseThrow(() -> new RuntimeException("초기화 중 주문을 찾을 수 없습니다. ID: 1"));;
-//        orderService.deleteOrder(orderToDelete);
-//        System.out.println("주문개수:"+orderService.count());
-//        System.out.println("주문개수:"+orderItemService.count());
-//        orderItemService.deleteOrderItem(1);
-//        System.out.println("주문개수:"+orderItemService.count());
 
       System.out.println("Order 엔티티 데이터 초기화");
     } else {
