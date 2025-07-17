@@ -7,10 +7,12 @@ import com.gridsandcircles.domain.order.orderItem.service.OrderItemService;
 import com.gridsandcircles.domain.product.product.entity.Product;
 import com.gridsandcircles.domain.product.product.service.ProductService;
 import jakarta.annotation.PostConstruct;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 
 @RequiredArgsConstructor
+@Transactional
 @Configuration
 public class BaseInitData {
 
@@ -22,6 +24,7 @@ public class BaseInitData {
     public void init() {
         System.out.println("BaseInitData 초기 데이터 입력");
 
+        if(orderService.count()==0){
         Order order1 = Order.builder()
                 .email("order1@example.com")
                 .address("서울")
@@ -70,13 +73,17 @@ public class BaseInitData {
         orderItemService.createOrderItem(orderItem2);
 
         System.out.println("주문개수:"+orderService.count());
-        orderService.deleteOrder(1);
-        System.out.println("주문개수:"+orderService.count());
 
-        System.out.println("주문개수:"+orderItemService.count());
-        orderItemService.deleteOrderItem(1);
-        System.out.println("주문개수:"+orderItemService.count());
+//        Order orderToDelete = orderService.findById(1).orElseThrow(() -> new RuntimeException("초기화 중 주문을 찾을 수 없습니다. ID: 1"));;
+//        orderService.deleteOrder(orderToDelete);
+//        System.out.println("주문개수:"+orderService.count());
+//        System.out.println("주문개수:"+orderItemService.count());
+//        orderItemService.deleteOrderItem(1);
+//        System.out.println("주문개수:"+orderItemService.count());
 
         System.out.println("Order 엔티티 데이터 초기화");
+        } else{
+            System.out.println("초기 데이터가 이미 존재합니다.");
+        }
     }
 }
