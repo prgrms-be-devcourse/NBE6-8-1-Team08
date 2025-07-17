@@ -1,7 +1,7 @@
 package com.gridsandcircles.config;
 
-import com.gridsandcircles.domain.auth.JwtAuthenticationFilter;
-import com.gridsandcircles.domain.auth.JwtUtil;
+import com.gridsandcircles.domain.auth.filter.JwtAuthenticationFilter;
+import com.gridsandcircles.domain.auth.util.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
