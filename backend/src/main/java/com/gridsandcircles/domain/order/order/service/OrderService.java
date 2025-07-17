@@ -18,11 +18,13 @@ public class OrderService{
   private final OrderRepository orderRepository;
   private final OrderItemService orderItemService;
 
-  public long count() {
+  @Transactional(readOnly = true)
+  public long countOrders() {
     return orderRepository.count();
   }
 
-  public List<Order> findAll() {
+  @Transactional(readOnly = true)
+  public List<Order> getOrders() {
     return orderRepository.findAll();
   }
 
@@ -36,26 +38,28 @@ public class OrderService{
     orderRepository.delete(order);
   }
 
+  @Transactional(readOnly = true)
   public Optional<Order> findById(int id) {
     return orderRepository.findById(id);
   }
 
+  @Transactional
   private void validateOrderItemDeletable(Order order, OrderItem orderItem) {
     if (!order.getOrderItems().contains(orderItem)) {
-      throw new IllegalArgumentException("이 주문에 포함되지 않은 항목입니다.");
+      throw new IllegalArgumentException("Order item not found");
     }
 
     if (!(order.isOrderStatus() && !order.isDeliveryStatus())) {
-      throw new IllegalStateException("배송 중이거나 미완료 주문에서는 항목을 삭제할 수 없습니다.");
+      throw new IllegalStateException("Cannot delete item from active or incomplete order");
     }
   }
 
   @Transactional
   public void deleteOrderItem(Integer orderId, Integer orderItemId) {
     Order order = findById(orderId)
-            .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다."));
+            .orElseThrow(() -> new RuntimeException("Order not found"));
     OrderItem orderItem = orderItemService.findById(orderItemId)
-            .orElseThrow(() -> new RuntimeException("주문 항목을 찾을 수 없습니다."));
+            .orElseThrow(() -> new RuntimeException("Order item not found"));
 
     validateOrderItemDeletable(order, orderItem);
 

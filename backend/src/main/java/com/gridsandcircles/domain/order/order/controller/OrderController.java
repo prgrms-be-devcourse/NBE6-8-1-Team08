@@ -22,7 +22,7 @@ public class OrderController {
 
     @GetMapping
     public ResponseEntity<ResultResponse<List<OrderResponseDto>>> getOrders() {
-        List<OrderResponseDto> items = orderService.findAll()
+        List<OrderResponseDto> items = orderService.getOrders()
                 .stream()
                 .map(OrderMapper::toResponseDto)
                 .toList();
@@ -34,12 +34,12 @@ public class OrderController {
     @Transactional
     public ResponseEntity<ResultResponse<Void>> delete(@PathVariable int id) {
         Order order = orderService.findById(id)
-                .orElseThrow(() -> new RuntimeException("해당 주문이 존재하지 않습니다."));
+                .orElseThrow(() -> new RuntimeException("Order not found"));
 
         orderService.deleteOrder(order);
 
         ResultResponse<Void> response = new ResultResponse<>(
-                "%d번 주문이 삭제되었습니다.".formatted(id)
+                "Order #%d has been deleted".formatted(id)
         );
 
         return ResponseEntity.ok(response);

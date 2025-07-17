@@ -24,7 +24,7 @@ public class BaseInitData {
   public void init() {
     System.out.println("BaseInitData 초기 데이터 입력");
 
-    if (orderService.count() == 0) {
+    if (orderService.countOrders() == 0) {
       Order order1 = Order.builder()
               .email("order1@example.com")
               .address("서울")
@@ -79,7 +79,7 @@ public class BaseInitData {
       orderItemService.createOrderItem(orderItem2);
       orderItemService.createOrderItem(orderItem3);
 
-      System.out.println("주문개수:" + orderService.count());
+      System.out.println("주문개수:" + orderService.countOrders());
       System.out.println("Order 엔티티 데이터 초기화");
     } else {
       System.out.println("초기 데이터가 이미 존재합니다.");
