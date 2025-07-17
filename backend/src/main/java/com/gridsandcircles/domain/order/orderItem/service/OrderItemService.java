@@ -5,6 +5,8 @@ import com.gridsandcircles.domain.order.orderItem.repository.OrderItemRepository
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
 public class OrderItemService {
@@ -21,5 +23,9 @@ public class OrderItemService {
 
     public void deleteOrderItem(Integer orderItemId){
         orderItemRepository.deleteById(orderItemId);
+    }
+
+    public Optional<OrderItem> findById(int id) {
+        return orderItemRepository.findById(id);
     }
 }
