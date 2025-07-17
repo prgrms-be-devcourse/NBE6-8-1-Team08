@@ -89,6 +89,6 @@ public class AdminController {
         .toList();
 
     return ResponseEntity.ok()
-        .body(new ResultResponse<>("Get all orders successful ", orderDtos));
+        .body(new ResultResponse<>("Get all orders successful", orderDtos));
   }
 }

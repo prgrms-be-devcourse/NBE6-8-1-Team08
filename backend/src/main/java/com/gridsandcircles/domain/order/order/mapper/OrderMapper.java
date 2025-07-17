@@ -9,13 +9,6 @@ import java.util.stream.Collectors;
 
 public class OrderMapper {
 
-    public static Order toEntity(OrderRequestDto requestDto) {
-        return Order.builder()
-                .email(requestDto.email())
-                .address(requestDto.address())
-                .build();
-    }
-
     public static OrderResponseDto toResponseDto(Order order) {
         return new OrderResponseDto(
                 order.getOrderId(),

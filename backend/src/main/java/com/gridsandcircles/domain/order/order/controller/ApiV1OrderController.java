@@ -26,7 +26,6 @@ public class ApiV1OrderController {
                 .map(OrderMapper::toResponseDto)
                 .toList();
 
-        return ResponseEntity.ok()
-                .body(new ResultResponse<>("Get order successful", items));
+        return ResponseEntity.ok().body(new ResultResponse<>("Get order successful", items));
     }
 }

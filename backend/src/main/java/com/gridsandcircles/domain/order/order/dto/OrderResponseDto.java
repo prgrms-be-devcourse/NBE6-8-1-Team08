@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public record OrderResponseDto(
-
     Integer orderId,
     String email,
     String address,
