@@ -1,6 +1,6 @@
 package com.gridsandcircles.domain.order.order.entity;
 
-import com.gridsandcircles.domain.order.orderItem.entity.OrderItem;
+import com.gridsandcircles.domain.order.orderitem.entity.OrderItem;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -35,17 +35,12 @@ public class Order {
 
     private boolean deliveryStatus;
 
-    @OneToMany(mappedBy="order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(mappedBy="order", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @Builder.Default
     private List<OrderItem> orderItems = new ArrayList<>();
 
     public void addOrderItem(OrderItem item) {
         orderItems.add(item);
         item.setOrder(this);
-    }
-
-    public void removeOrderItem(OrderItem orderItem) {
-        orderItems.remove(orderItem);
-        orderItem.setOrder(null);
     }
 }

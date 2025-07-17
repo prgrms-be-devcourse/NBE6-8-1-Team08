@@ -1,7 +1,9 @@
-package com.gridsandcircles.domain.admin.admin;
+package com.gridsandcircles.domain.admin.admin.service;
 
 import static org.springframework.http.HttpStatus.CONFLICT;
 
+import com.gridsandcircles.domain.admin.admin.entity.Admin;
+import com.gridsandcircles.domain.admin.admin.repository.AdminRepository;
 import com.gridsandcircles.global.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

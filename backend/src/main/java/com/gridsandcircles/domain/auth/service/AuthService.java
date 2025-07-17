@@ -1,9 +1,9 @@
-package com.gridsandcircles.domain.auth;
+package com.gridsandcircles.domain.auth.service;
 
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
-import com.gridsandcircles.domain.admin.admin.Admin;
-import com.gridsandcircles.domain.admin.admin.AdminRepository;
+import com.gridsandcircles.domain.admin.admin.entity.Admin;
+import com.gridsandcircles.domain.admin.admin.repository.AdminRepository;
 import com.gridsandcircles.global.ServiceException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
