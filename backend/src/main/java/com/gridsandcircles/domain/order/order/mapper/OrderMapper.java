@@ -4,7 +4,6 @@ import com.gridsandcircles.domain.order.order.dto.OrderDto;
 import com.gridsandcircles.domain.order.order.entity.Order;
 
 public class OrderMapper {
-
     public static OrderDto toDto(Order order) {
         return new OrderDto(order);
     }
