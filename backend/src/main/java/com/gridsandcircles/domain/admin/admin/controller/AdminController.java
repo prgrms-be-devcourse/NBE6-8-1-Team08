@@ -8,7 +8,7 @@ import com.gridsandcircles.domain.admin.admin.mapper.AdminMapper;
 import com.gridsandcircles.domain.admin.admin.dto.AdminRequestDto;
 import com.gridsandcircles.domain.admin.admin.dto.AdminResponseDto;
 import com.gridsandcircles.domain.admin.admin.service.AdminService;
-import com.gridsandcircles.domain.order.order.dto.OrderDto;
+import com.gridsandcircles.domain.order.order.dto.OrderResponseDto;
 import com.gridsandcircles.domain.order.order.mapper.OrderMapper;
 import com.gridsandcircles.domain.order.order.service.OrderService;
 import com.gridsandcircles.global.ResultResponse;
@@ -82,10 +82,10 @@ public class AdminController {
           schema = @Schema(implementation = ResultResponse.class)
       )
   )
-  public ResponseEntity<ResultResponse<List<OrderDto>>> getOrders() {
-    List<OrderDto> orderDtos = orderService.findAll()
+  public ResponseEntity<ResultResponse<List<OrderResponseDto>>> getOrders() {
+    List<OrderResponseDto> orderDtos = orderService.findAll()
         .stream()
-        .map(OrderMapper::toDto)
+        .map(OrderMapper::toResponseDto)
         .toList();
 
     return ResponseEntity.ok()

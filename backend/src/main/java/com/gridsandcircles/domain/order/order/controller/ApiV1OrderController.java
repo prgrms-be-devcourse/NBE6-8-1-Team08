@@ -1,9 +1,11 @@
 package com.gridsandcircles.domain.order.order.controller;
 
-import com.gridsandcircles.domain.order.order.dto.OrderDto;
-import com.gridsandcircles.domain.order.order.entity.Order;
+import com.gridsandcircles.domain.order.order.dto.OrderResponseDto;
+import com.gridsandcircles.domain.order.order.mapper.OrderMapper;
 import com.gridsandcircles.domain.order.order.service.OrderService;
+import com.gridsandcircles.global.ResultResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,11 +20,13 @@ public class ApiV1OrderController {
     private final OrderService orderService;
 
     @GetMapping
-    public List<OrderDto> getOrders() {
-        List<Order> items = orderService.findAll();
-        return items
+    public ResponseEntity<ResultResponse<List<OrderResponseDto>>> getOrders() {
+        List<OrderResponseDto> items = orderService.findAll()
                 .stream()
-                .map(OrderDto::new)
+                .map(OrderMapper::toResponseDto)
                 .toList();
+
+        return ResponseEntity.ok()
+                .body(new ResultResponse<>("Get order successful", items));
     }
 }
