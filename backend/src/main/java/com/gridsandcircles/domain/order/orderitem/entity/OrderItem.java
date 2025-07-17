@@ -1,4 +1,4 @@
-package com.gridsandcircles.domain.order.orderItem.entity;
+package com.gridsandcircles.domain.order.orderitem.entity;
 
 import com.gridsandcircles.domain.order.order.entity.Order;
 import com.gridsandcircles.domain.product.product.entity.Product;

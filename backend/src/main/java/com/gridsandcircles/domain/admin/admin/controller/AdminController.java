@@ -1,9 +1,16 @@
-package com.gridsandcircles.domain.admin.admin;
+package com.gridsandcircles.domain.admin.admin.controller;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+import com.gridsandcircles.domain.admin.admin.mapper.AdminMapper;
+import com.gridsandcircles.domain.admin.admin.dto.AdminRequestDto;
+import com.gridsandcircles.domain.admin.admin.dto.AdminResponseDto;
+import com.gridsandcircles.domain.admin.admin.service.AdminService;
+import com.gridsandcircles.domain.order.order.dto.OrderResponseDto;
+import com.gridsandcircles.domain.order.order.mapper.OrderMapper;
+import com.gridsandcircles.domain.order.order.service.OrderService;
 import com.gridsandcircles.global.ResultResponse;
 import com.gridsandcircles.global.ServiceException;
 import com.gridsandcircles.global.swagger.BadRequestApiResponse;
@@ -17,10 +24,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -29,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminController {
 
   private final AdminService adminService;
+  private final OrderService orderService;
 
   @PostMapping("/signup")
   @Operation(summary = "회원 가입")
@@ -51,17 +58,37 @@ public class AdminController {
   )
   @BadRequestApiResponse
   @ConflictApiResponse
-  public ResponseEntity<ResultResponse<AdminSignupResponseDto>> signup(
-      @Valid @RequestBody AdminSignupRequestDto adminSignupRequestDto
+  public ResponseEntity<ResultResponse<AdminResponseDto>> signup(
+      @Valid @RequestBody AdminRequestDto adminRequestDto
   ) {
-    if (!adminSignupRequestDto.inputPassword().equals(adminSignupRequestDto.confirmPassword())) {
+    if (!adminRequestDto.inputPassword().equals(adminRequestDto.confirmPassword())) {
       throw new ServiceException(BAD_REQUEST, "Password does not match");
     }
 
-    AdminSignupResponseDto adminSignupResponseDto = AdminMapper.toDto(adminService.createAdmin(
-        adminSignupRequestDto.adminId(), adminSignupRequestDto.inputPassword()));
+    AdminResponseDto adminResponseDto = AdminMapper.toDto(
+        adminService.createAdmin(adminRequestDto.adminId(), adminRequestDto.inputPassword()));
 
     return ResponseEntity.status(CREATED)
-        .body(new ResultResponse<>("Sign up successful", adminSignupResponseDto));
+        .body(new ResultResponse<>("Sign up successful", adminResponseDto));
+  }
+
+  @GetMapping("/orders")
+  @Operation(summary = "전체 주문 내역 조회")
+  @ApiResponse(
+      responseCode = "200",
+      description = "전체 주문 내역 조회 성공",
+      content = @Content(
+          mediaType = APPLICATION_JSON_VALUE,
+          schema = @Schema(implementation = ResultResponse.class)
+      )
+  )
+  public ResponseEntity<ResultResponse<List<OrderResponseDto>>> getOrders() {
+    List<OrderResponseDto> orderDtos = orderService.findAll()
+        .stream()
+        .map(OrderMapper::toResponseDto)
+        .toList();
+
+    return ResponseEntity.ok()
+        .body(new ResultResponse<>("Get all orders successful", orderDtos));
   }
 }

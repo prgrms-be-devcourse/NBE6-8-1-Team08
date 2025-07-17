@@ -1,7 +1,8 @@
-package com.gridsandcircles.domain.auth;
+package com.gridsandcircles.domain.auth.filter;
 
 import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
+import com.gridsandcircles.domain.auth.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;

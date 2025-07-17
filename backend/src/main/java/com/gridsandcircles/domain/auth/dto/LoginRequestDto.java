@@ -1,4 +1,4 @@
-package com.gridsandcircles.domain.auth;
+package com.gridsandcircles.domain.auth.dto;
 
 import jakarta.validation.constraints.Size;
 
