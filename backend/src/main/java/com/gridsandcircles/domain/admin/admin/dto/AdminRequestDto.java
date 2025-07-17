@@ -1,4 +1,4 @@
-package com.gridsandcircles.domain.admin.admin;
+package com.gridsandcircles.domain.admin.admin.dto;
 
 import jakarta.validation.constraints.Size;
 

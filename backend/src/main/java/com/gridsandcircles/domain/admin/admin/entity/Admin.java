@@ -1,4 +1,4 @@
-package com.gridsandcircles.domain.admin.admin;
+package com.gridsandcircles.domain.admin.admin.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

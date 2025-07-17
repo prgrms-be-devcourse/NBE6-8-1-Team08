@@ -1,5 +1,6 @@
 package com.gridsandcircles.domain.admin.admin;
 
+import com.gridsandcircles.domain.admin.admin.controller.AdminController;
 import com.gridsandcircles.domain.order.order.service.OrderService;
 import org.junit.jupiter.api.DisplayName;
 import com.gridsandcircles.domain.order.order.entity.Order;
@@ -33,7 +34,7 @@ public class AdminControllerTest {
 
     @Test
     @DisplayName("모든 주문 조회")
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @WithMockUser(username = "admin")
     void getOrders() throws Exception {
         ResultActions resultActions = mvc
                 .perform(
