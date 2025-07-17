@@ -8,9 +8,9 @@ public class OrderItemMapper {
     public static OrderItemResponseDto toResponseDto(OrderItem orderItem) {
         return new OrderItemResponseDto(
                 orderItem.getOrderItemId(),
-                orderItem.getProduct(),
+                orderItem.getProduct().getName(),
                 orderItem.getOrderCount(),
-                orderItem.getOrder()
+                orderItem.getProduct().getPrice()
         );
     }
 }

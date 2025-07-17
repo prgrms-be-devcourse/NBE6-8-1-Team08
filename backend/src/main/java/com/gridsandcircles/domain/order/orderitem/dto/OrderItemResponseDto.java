@@ -5,8 +5,7 @@ import com.gridsandcircles.domain.product.product.entity.Product;
 
 public record OrderItemResponseDto(
         Integer orderItemId,
-        Product product,
+        String productName,
         int orderCount,
-        Order order
-) {
-}
+        int productPrice
+) {}
