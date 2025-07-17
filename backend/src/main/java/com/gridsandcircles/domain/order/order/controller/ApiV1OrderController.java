@@ -47,7 +47,7 @@ public class ApiV1OrderController {
     @DeleteMapping("/{orderId}/items/{orderItemId}")
     @Transactional
     public ResponseEntity<RsData<Map<String, Integer>>> removeOrderItem(@PathVariable int orderId, @PathVariable int orderItemId) {
-        orderService.removeOrderItem(orderId, orderItemId);
+        orderService.deleteOrderItem(orderId, orderItemId);
         return ResponseEntity.ok(
                 RsData.success("주문 항목 삭제 성공", Map.of("orderId", orderId,"orderItemId", orderItemId))
         );

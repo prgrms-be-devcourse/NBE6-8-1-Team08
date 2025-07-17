@@ -80,7 +80,6 @@ public class BaseInitData {
       orderItemService.createOrderItem(orderItem3);
 
       System.out.println("주문개수:" + orderService.count());
-
       System.out.println("Order 엔티티 데이터 초기화");
     } else {
       System.out.println("초기 데이터가 이미 존재합니다.");

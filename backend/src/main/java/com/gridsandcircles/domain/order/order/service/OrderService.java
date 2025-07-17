@@ -39,6 +39,7 @@ public class OrderService{
   public Optional<Order> findById(int id) {
     return orderRepository.findById(id);
   }
+
   private void validateOrderItemDeletable(Order order, OrderItem orderItem) {
     if (!order.getOrderItems().contains(orderItem)) {
       throw new IllegalArgumentException("이 주문에 포함되지 않은 항목입니다.");
@@ -46,17 +47,6 @@ public class OrderService{
 
     if (!(order.isOrderStatus() && !order.isDeliveryStatus())) {
       throw new IllegalStateException("배송 중이거나 미완료 주문에서는 항목을 삭제할 수 없습니다.");
-    }
-  }
-
-  public void removeOrderItem(Integer orderId, Integer orderItemId) {
-    Order order = orderRepository.findById(orderId)
-            .orElseThrow(() -> new RuntimeException("주문을 찾을 수 없습니다."));
-
-    boolean removed = order.getOrderItems().removeIf(item -> item.getOrderItemId().equals(orderItemId));
-
-    if (!removed) {
-      throw new RuntimeException("해당 주문 항목을 찾을 수 없습니다.");
     }
   }
 
