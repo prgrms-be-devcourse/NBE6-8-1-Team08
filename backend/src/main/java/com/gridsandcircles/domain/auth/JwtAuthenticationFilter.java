@@ -7,7 +7,6 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -29,13 +28,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
   ) throws ServletException, IOException {
     String token = null;
 
-    if (request.getCookies() != null) {
-      for (Cookie cookie : request.getCookies()) {
-        if ("access_token".equals(cookie.getName())) {
-          token = cookie.getValue();
-          break;
-        }
-      }
+    String authHeader = request.getHeader("Authorization");
+    if (authHeader != null && authHeader.startsWith("Bearer ")) {
+      token = authHeader.substring(7);
     }
 
     if (token != null) {

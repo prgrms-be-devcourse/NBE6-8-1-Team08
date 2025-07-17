@@ -2,7 +2,6 @@ package com.gridsandcircles.domain.auth;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import com.gridsandcircles.domain.admin.admin.AdminResponseDto;
 import com.gridsandcircles.global.ResultResponse;
 import com.gridsandcircles.global.swagger.NotFoundApiResponse;
 import com.gridsandcircles.global.swagger.UnauthorizedApiResponse;
@@ -12,10 +11,9 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,9 +40,11 @@ public class AuthController {
           examples = @ExampleObject(value = """
               {
                 "msg": "Login successful",
-                "data": {
-                  "adminId": "test"
-                }
+                    "data": {
+                        "adminId": "test",
+                        "accessToken": "eyJhbGciOiJIUzI1N...",
+                        "refreshToken": "fed97514-7676-4..."
+                    }
               }
               """
           )
@@ -52,23 +52,14 @@ public class AuthController {
   )
   @UnauthorizedApiResponse
   @NotFoundApiResponse
-  public ResponseEntity<ResultResponse<AdminResponseDto>> login(
-      @Valid @RequestBody LoginRequestDto loginRequestDto,
-      HttpServletResponse response
+  public ResponseEntity<ResultResponse<LoginResponseDto>> login(
+      @Valid @RequestBody LoginRequestDto loginRequestDto
   ) {
     String adminId = authService.loginAdmin(loginRequestDto.adminId(), loginRequestDto.password());
-    String token = jwtUtil.generateToken(adminId);
+    String accessToken = jwtUtil.generateToken(adminId);
+    String refreshToken = UUID.randomUUID().toString();
 
-    ResponseCookie cookie = ResponseCookie.from("access_token", token)
-        .httpOnly(true)
-        .sameSite("Strict")
-        .path("/")
-        .maxAge(300)
-        .build();
-
-    response.addHeader("Set-Cookie", cookie.toString());
-
-    return ResponseEntity.ok()
-        .body(new ResultResponse<>("Login successful", new AdminResponseDto(adminId)));
+    return ResponseEntity.ok().body(new ResultResponse<>("Login successful",
+        new LoginResponseDto(adminId, accessToken, refreshToken)));
   }
 }
