@@ -4,9 +4,9 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+import com.gridsandcircles.domain.admin.admin.dto.AdminSignupRequestDto;
+import com.gridsandcircles.domain.admin.admin.dto.AdminSignupResponseDto;
 import com.gridsandcircles.domain.admin.admin.mapper.AdminMapper;
-import com.gridsandcircles.domain.admin.admin.dto.AdminRequestDto;
-import com.gridsandcircles.domain.admin.admin.dto.AdminResponseDto;
 import com.gridsandcircles.domain.admin.admin.service.AdminService;
 import com.gridsandcircles.domain.order.order.dto.OrderResponseDto;
 import com.gridsandcircles.domain.order.order.mapper.OrderMapper;
@@ -22,11 +22,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -58,18 +57,19 @@ public class AdminController {
   )
   @BadRequestApiResponse
   @ConflictApiResponse
-  public ResponseEntity<ResultResponse<AdminResponseDto>> signup(
-      @Valid @RequestBody AdminRequestDto adminRequestDto
+  public ResponseEntity<ResultResponse<AdminSignupResponseDto>> signup(
+      @Valid @RequestBody AdminSignupRequestDto adminSignupRequestDto
   ) {
-    if (!adminRequestDto.inputPassword().equals(adminRequestDto.confirmPassword())) {
+    if (!adminSignupRequestDto.inputPassword().equals(adminSignupRequestDto.confirmPassword())) {
       throw new ServiceException(BAD_REQUEST, "Password does not match");
     }
 
-    AdminResponseDto adminResponseDto = AdminMapper.toDto(
-        adminService.createAdmin(adminRequestDto.adminId(), adminRequestDto.inputPassword()));
+    AdminSignupResponseDto adminSignupResponseDto = AdminMapper.toDto(
+        adminService.createAdmin(adminSignupRequestDto.adminId(),
+            adminSignupRequestDto.inputPassword()));
 
     return ResponseEntity.status(CREATED)
-        .body(new ResultResponse<>("Sign up successful", adminResponseDto));
+        .body(new ResultResponse<>("Sign up successful", adminSignupResponseDto));
   }
 
   @GetMapping("/orders")
