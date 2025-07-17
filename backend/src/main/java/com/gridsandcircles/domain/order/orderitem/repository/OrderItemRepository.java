@@ -1,6 +1,6 @@
-package com.gridsandcircles.domain.order.orderItem.repository;
+package com.gridsandcircles.domain.order.orderitem.repository;
 
-import com.gridsandcircles.domain.order.orderItem.entity.OrderItem;
+import com.gridsandcircles.domain.order.orderitem.entity.OrderItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface OrderItemRepository extends JpaRepository<OrderItem, Integer> {

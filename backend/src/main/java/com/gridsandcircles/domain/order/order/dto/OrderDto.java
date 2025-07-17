@@ -1,7 +1,7 @@
 package com.gridsandcircles.domain.order.order.dto;
 
 import com.gridsandcircles.domain.order.order.entity.Order;
-import com.gridsandcircles.domain.order.orderItem.dto.OrderItemDto;
+import com.gridsandcircles.domain.order.orderitem.dto.OrderItemDto;
 import lombok.Data;
 
 import java.sql.Timestamp;

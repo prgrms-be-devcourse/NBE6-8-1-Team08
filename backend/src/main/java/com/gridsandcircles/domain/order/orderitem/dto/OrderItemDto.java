@@ -1,6 +1,6 @@
-package com.gridsandcircles.domain.order.orderItem.dto;
+package com.gridsandcircles.domain.order.orderitem.dto;
 
-import com.gridsandcircles.domain.order.orderItem.entity.OrderItem;
+import com.gridsandcircles.domain.order.orderitem.entity.OrderItem;
 import lombok.Data;
 
 @Data

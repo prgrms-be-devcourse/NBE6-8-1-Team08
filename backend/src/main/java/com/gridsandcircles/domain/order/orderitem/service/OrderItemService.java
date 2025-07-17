@@ -1,7 +1,7 @@
-package com.gridsandcircles.domain.order.orderItem.service;
+package com.gridsandcircles.domain.order.orderitem.service;
 
-import com.gridsandcircles.domain.order.orderItem.entity.OrderItem;
-import com.gridsandcircles.domain.order.orderItem.repository.OrderItemRepository;
+import com.gridsandcircles.domain.order.orderitem.entity.OrderItem;
+import com.gridsandcircles.domain.order.orderitem.repository.OrderItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
