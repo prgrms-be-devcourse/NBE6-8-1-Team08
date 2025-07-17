@@ -39,7 +39,6 @@ public class OrderService {
     public Optional<Order> findById(int id) {
         return orderRepository.findById(id);
     }
-
     private void validateOrderItemDeletable(Order order, OrderItem orderItem) {
         if (!order.getOrderItems().contains(orderItem)) {
             throw new IllegalArgumentException("이 주문에 포함되지 않은 항목입니다.");
