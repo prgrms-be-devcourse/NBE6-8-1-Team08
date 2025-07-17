@@ -5,7 +5,6 @@ import com.gridsandcircles.domain.order.order.entity.Order;
 import com.gridsandcircles.domain.order.order.mapper.OrderMapper;
 import com.gridsandcircles.domain.order.order.service.OrderService;
 import com.gridsandcircles.global.ResultResponse;
-import com.gridsandcircles.global.rsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +16,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/orders")
-public class ApiV1OrderController {
+public class OrderController {
 
     private final OrderService orderService;
 
@@ -30,27 +29,34 @@ public class ApiV1OrderController {
 
         return ResponseEntity.ok().body(new ResultResponse<>("Get order successful", items));
     }
-    //브라우저로 작동확인
+
     @DeleteMapping("/{id}")
     @Transactional
-    public RsData<Void> delete(@PathVariable int id) {
-        Order order = orderService.findById(id).get();
+    public ResponseEntity<ResultResponse<Void>> delete(@PathVariable int id) {
+        Order order = orderService.findById(id)
+                .orElseThrow(() -> new RuntimeException("해당 주문이 존재하지 않습니다."));
 
         orderService.deleteOrder(order);
 
-        return new RsData<>(
-                "%d번 주문이 삭제되었습니다.".formatted(id),
-                null
+        ResultResponse<Void> response = new ResultResponse<>(
+                "%d번 주문이 삭제되었습니다.".formatted(id)
         );
-    }
-    //브라우저로 작동확인
-    @DeleteMapping("/{orderId}/items/{orderItemId}")
-    @Transactional
-    public ResponseEntity<RsData<Map<String, Integer>>> removeOrderItem(@PathVariable int orderId, @PathVariable int orderItemId) {
-        orderService.deleteOrderItem(orderId, orderItemId);
-        return ResponseEntity.ok(
-                RsData.success("주문 항목 삭제 성공", Map.of("orderId", orderId,"orderItemId", orderItemId))
-        );
+
+        return ResponseEntity.ok(response);
     }
 
+    @DeleteMapping("/{orderId}/items/{orderItemId}")
+    public ResponseEntity<ResultResponse<Map<String, Integer>>> removeOrderItem(
+            @PathVariable int orderId,
+            @PathVariable int orderItemId
+    ) {
+        orderService.deleteOrderItem(orderId, orderItemId);
+
+        return ResponseEntity.ok().body(
+                new ResultResponse<>(
+                        "Delete orderItem successful",
+                        Map.of("orderId", orderId,"orderItemId", orderItemId)
+                )
+        );
+    }
 }
