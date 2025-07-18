@@ -4,7 +4,9 @@ import com.gridsandcircles.domain.order.order.entity.Order;
 import com.gridsandcircles.domain.order.order.repository.OrderRepository;
 import com.gridsandcircles.domain.order.orderitem.entity.OrderItem;
 import com.gridsandcircles.domain.order.orderitem.service.OrderItemService;
+import com.gridsandcircles.global.ServiceException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,20 +48,21 @@ public class OrderService{
   @Transactional
   protected void validateOrderItemDeletable(Order order, OrderItem orderItem) {
     if (!order.getOrderItems().contains(orderItem)) {
-      throw new IllegalArgumentException("Order item not found");
+      throw new ServiceException(HttpStatus.NOT_FOUND, "Order item not found");
     }
 
     if (!(order.isOrderStatus() && !order.isDeliveryStatus())) {
-      throw new IllegalStateException("Cannot delete item from active or incomplete order");
+      throw new ServiceException(HttpStatus.BAD_REQUEST, "Cannot delete item from active or incomplete order");
     }
   }
 
   @Transactional
   public void deleteOrderItem(Integer orderId, Integer orderItemId) {
     Order order = getOrder(orderId)
-            .orElseThrow(() -> new RuntimeException("Order not found"));
+            .orElseThrow(() -> new ServiceException(HttpStatus.NOT_FOUND, "Order not found"));
+
     OrderItem orderItem = orderItemService.getOrderItem(orderItemId)
-            .orElseThrow(() -> new RuntimeException("Order item not found"));
+            .orElseThrow(() -> new ServiceException(HttpStatus.NOT_FOUND, "Order item not found"));
 
     validateOrderItemDeletable(order, orderItem);
 
