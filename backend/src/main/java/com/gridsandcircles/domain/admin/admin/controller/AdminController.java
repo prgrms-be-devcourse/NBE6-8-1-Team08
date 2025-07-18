@@ -34,7 +34,6 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
 
   private final OrderService orderService;
-
   private final AdminService adminService;
 
   @PostMapping("/signup")
@@ -65,9 +64,8 @@ public class AdminController {
       throw new ServiceException(BAD_REQUEST, "Password does not match");
     }
 
-    AdminSignupResponseDto adminSignupResponseDto = AdminMapper.toDto(
-        adminService.createAdmin(adminSignupRequestDto.adminId(),
-            adminSignupRequestDto.inputPassword()));
+    AdminSignupResponseDto adminSignupResponseDto = AdminMapper.toDto(adminService.createAdmin(
+        adminSignupRequestDto.adminId(), adminSignupRequestDto.inputPassword()));
 
     return ResponseEntity.status(CREATED)
         .body(new ResultResponse<>("Sign up successful", adminSignupResponseDto));
@@ -96,51 +94,51 @@ public class AdminController {
   @PatchMapping("/orders/cancel/{id}")
   @Operation(summary = "주문 취소, by order")
   @ApiResponse(
-          responseCode = "200",
-          description = "order 단위로 주문 취소 성공",
-          content = @Content(
-                  mediaType = APPLICATION_JSON_VALUE,
-                  schema = @Schema(implementation = ResultResponse.class),
-                  examples = @ExampleObject(value = """
+      responseCode = "200",
+      description = "order 단위로 주문 취소 성공",
+      content = @Content(
+          mediaType = APPLICATION_JSON_VALUE,
+          schema = @Schema(implementation = ResultResponse.class),
+          examples = @ExampleObject(value = """
               {
                 "msg": "Cancel order successful"
               }
               """
-                  )
           )
+      )
   )
   public ResponseEntity<ResultResponse<Void>> cancelOrder(
-          @PathVariable int id
+      @PathVariable int id
   ) {
     orderService.cancel(id);
 
     return ResponseEntity.ok()
-            .body(new ResultResponse<>("Cancel order successful"));
+        .body(new ResultResponse<>("Cancel order successful"));
   }
 
   @PatchMapping("/orders/cancel/{orderId}/{id}")
   @Operation(summary = "주문 취소, by orderItem")
   @ApiResponse(
-          responseCode = "200",
-          description = "product 단위로 주문 취소 성공",
-          content = @Content(
-                  mediaType = APPLICATION_JSON_VALUE,
-                  schema = @Schema(implementation = ResultResponse.class),
-                  examples = @ExampleObject(value = """
+      responseCode = "200",
+      description = "product 단위로 주문 취소 성공",
+      content = @Content(
+          mediaType = APPLICATION_JSON_VALUE,
+          schema = @Schema(implementation = ResultResponse.class),
+          examples = @ExampleObject(value = """
               {
                 "msg": "Cancel orderItem successful"
               }
               """
-                  )
           )
+      )
   )
   public ResponseEntity<ResultResponse<Void>> cancelOrderDetail(
-          @PathVariable int orderId,
-          @PathVariable int id
+      @PathVariable int orderId,
+      @PathVariable int id
   ) {
     orderService.cancelDetail(orderId, id);
 
     return ResponseEntity.ok()
-            .body(new ResultResponse<>("Cancel orderItem successful"));
+        .body(new ResultResponse<>("Cancel orderItem successful"));
   }
 }
