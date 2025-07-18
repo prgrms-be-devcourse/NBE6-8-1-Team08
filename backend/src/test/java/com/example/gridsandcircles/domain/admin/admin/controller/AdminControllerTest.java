@@ -42,7 +42,7 @@ public class AdminControllerTest {
         )
         .andDo(print());
 
-    List<Order> orders = orderService.findAll();
+    List<Order> orders = orderService.getOrders();
 
     resultActions
         .andExpect(handler().handlerType(AdminController.class))
