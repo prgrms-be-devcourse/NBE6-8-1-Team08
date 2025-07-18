@@ -16,12 +16,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -60,9 +58,17 @@ public class AuthController {
   ) {
     String adminId = authService.loginAdmin(loginRequestDto.adminId(), loginRequestDto.password());
     String accessToken = jwtUtil.generateToken(adminId);
-    String refreshToken = authService.createRefreshToken();
+    String refreshToken = authService.createRefreshToken(adminId);
 
     return ResponseEntity.ok().body(new ResultResponse<>("Login successful",
         new LoginResponseDto(adminId, accessToken, refreshToken)));
+  }
+
+  @DeleteMapping("/logout")
+  @Operation(summary = "로그아웃")
+  @ApiResponse(responseCode = "204", description = "로그아웃 성공")
+  public ResponseEntity<Void> logout(Principal principal) {
+    authService.deleteRefreshToken(principal.getName());
+    return ResponseEntity.noContent().build();
   }
 }

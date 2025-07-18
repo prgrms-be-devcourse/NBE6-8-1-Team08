@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 public class RefreshToken {
 
   @Id
+  private String adminId;
+
   @Column(length = 36)
   private String refreshToken;
 }

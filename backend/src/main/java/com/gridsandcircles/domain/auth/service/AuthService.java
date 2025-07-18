@@ -32,9 +32,13 @@ public class AuthService {
     return adminId;
   }
 
-  public String createRefreshToken() {
-    return refreshTokenRepository.save(new RefreshToken(UUID.randomUUID().toString()))
+  public String createRefreshToken(String adminId) {
+    return refreshTokenRepository.save(new RefreshToken(adminId, UUID.randomUUID().toString()))
         .getRefreshToken();
+  }
+
+  public void deleteRefreshToken(String adminId) {
+    refreshTokenRepository.deleteById(adminId);
   }
 
   private Admin getAdmin(String adminId) {
