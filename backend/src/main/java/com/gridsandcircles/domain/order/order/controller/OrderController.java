@@ -72,31 +72,6 @@ public class OrderController {
         );
     }
 
-
-//    @PatchMapping("/orders/cancel/{orderId}/{id}")
-//    @Operation(summary = "주문 취소, by orderItem")
-//    @ApiResponse(
-//            responseCode = "200",
-//            description = "product 단위로 주문 취소 성공",
-//            content = @Content(
-//                    mediaType = APPLICATION_JSON_VALUE,
-//                    schema = @Schema(implementation = ResultResponse.class),
-//                    examples = @ExampleObject(value = """
-//              {
-//                "msg": "Cancel orderItem successful"
-//              }
-//              """
-//                    )
-//            )
-//    )
-//    public ResponseEntity<ResultResponse<CancelOrderResponseDto>> cancelOrderDetail(
-//            @PathVariable int orderId,
-//            @PathVariable int id
-//    ) {
-//        return ResponseEntity.ok()
-//                .body(new ResultResponse<>("Cancel orderItem successful",orderService.cancelDetail(orderId, id)));
-//    }
-
     @PatchMapping("/cancel")
     @Operation(summary = "주문 취소, by orderItem")
     @ApiResponse(
@@ -132,8 +107,5 @@ public class OrderController {
                 new ResultResponse<>("Cancel orderItem successful", cancelResults);
 
         return ResponseEntity.ok().body(result);
-
-//        return ResponseEntity.ok()
-//                .body(new ResultResponse<>("Cancel orderItem successful",orderService.cancelDetails(orderId, orderItemIds)));
     }
 }
