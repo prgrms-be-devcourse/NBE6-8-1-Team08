@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -42,8 +41,9 @@ public class OrderService{
   }
 
   @Transactional(readOnly = true)
-  public Optional<Order> getOrder(int id) {
-    return orderRepository.findById(id);
+  public Order getOrder(int id) {
+    return orderRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("Order not found"));
   }
 
   @Transactional
@@ -59,8 +59,7 @@ public class OrderService{
 
   @Transactional
   public void deleteOrderItem(Integer orderId, Integer orderItemId) {
-    Order order = getOrder(orderId)
-            .orElseThrow(() -> new NoSuchElementException("Order not found"));
+    Order order = getOrder(orderId);
 
     OrderItem orderItem = orderItemService.getOrderItem(orderItemId);
 
