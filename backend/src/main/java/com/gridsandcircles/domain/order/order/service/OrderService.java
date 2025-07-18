@@ -100,16 +100,37 @@ public class OrderService{
   }
 
   @Transactional
-  public void cancel(int id) {
-    Order order = orderRepository.findById(id).get();
-    order.cancel();
+  public List<Order> cancelAllOrdersByEmail(String email) {
+    List<Order> orders = orderRepository.findByEmail(email);
+    if (orders.isEmpty()) {
+      throw new NoSuchElementException("No orders found for email: " + email);
+    }
+    for (Order order : orders) {
+      order.cancel();
+    }
+    return orders;
   }
 
   @Transactional
-  public void cancelDetail(int orderId, int id) {
-    Order order = orderRepository.findById(orderId).get();
+  public List<Order> cancelOrderByEmailAndProductId(String email, Long productId) {
+    List<Order> orders = orderRepository.findByEmail(email);
+    if (orders.isEmpty()) {
+      throw new NoSuchElementException("Order not found for email: " + email);
+    }
 
-    OrderItem orderItem = order.findItemById(id).get();
-    orderItem.cancel();
+    boolean itemCancelled = false;
+    for (Order order : orders) {
+      for (OrderItem orderItem : order.getOrderItems()) {
+        if (orderItem.getProduct().getProductId().equals(productId.intValue())) {
+          orderItem.cancel();
+          itemCancelled = true;
+        }
+      }
+    }
+
+    if (!itemCancelled) {
+      throw new NoSuchElementException("Product not found in any order for the given email.");
+    }
+    return orders;
   }
 }
