@@ -35,7 +35,7 @@ public class BaseInitData {
       Order order2 = Order.builder()
               .email("order2@example.com")
               .address("부산")
-              .orderStatus(false)
+              .orderStatus(true)
               .deliveryStatus(false)
               .build();
 
@@ -57,18 +57,21 @@ public class BaseInitData {
               .order(order1)
               .product(product1)
               .orderCount(10)
+              .orderItemStatus(true)
               .build();
 
       OrderItem orderItem2 = OrderItem.builder()
               .order(order1)
               .product(product2)
               .orderCount(20)
+              .orderItemStatus(true)
               .build();
 
       OrderItem orderItem3 = OrderItem.builder()
               .order(order2)
               .product(product2)
               .orderCount(30)
+              .orderItemStatus(true)
               .build();
 
       orderService.createOrder(order1);

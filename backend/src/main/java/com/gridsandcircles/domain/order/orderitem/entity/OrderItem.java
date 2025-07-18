@@ -29,5 +29,10 @@ public class OrderItem {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    private boolean OrderItemStatus;
+    @Column(name = "order_item_status")
+    private boolean orderItemStatus;
+
+    public void cancel() {
+        this.orderItemStatus = false;
+    }
 }

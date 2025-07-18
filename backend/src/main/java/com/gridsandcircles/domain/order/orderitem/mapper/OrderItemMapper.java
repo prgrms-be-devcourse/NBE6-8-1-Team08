@@ -10,7 +10,8 @@ public class OrderItemMapper {
                 orderItem.getOrderItemId(),
                 orderItem.getProduct().getName(),
                 orderItem.getOrderCount(),
-                orderItem.getProduct().getPrice()
+                orderItem.getProduct().getPrice(),
+                orderItem.isOrderItemStatus()
         );
     }
 }
