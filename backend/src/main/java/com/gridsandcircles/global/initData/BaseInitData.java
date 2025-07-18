@@ -35,7 +35,7 @@ public class BaseInitData {
       Order order2 = Order.builder()
               .email("order2@example.com")
               .address("부산")
-              .orderStatus(false)
+              .orderStatus(true)
               .deliveryStatus(false)
               .build();
 

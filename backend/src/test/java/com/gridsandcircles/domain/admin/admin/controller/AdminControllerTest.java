@@ -72,7 +72,7 @@ public class AdminControllerTest {
   }
 
   @Test
-  @DisplayName("주문 삭제, by product")
+  @DisplayName("주문 삭제, by orderItem")
   @WithMockUser(username = "admin")
   void deleteOrderDetail() throws Exception {
     int orderId = 1;

@@ -39,12 +39,12 @@ public class OrderService{
   }
 
   @Transactional(readOnly = true)
-  public Optional<Order> findById(int id) {
+  public Optional<Order> getOrder(int id) {
     return orderRepository.findById(id);
   }
 
   @Transactional
-  private void validateOrderItemDeletable(Order order, OrderItem orderItem) {
+  protected void validateOrderItemDeletable(Order order, OrderItem orderItem) {
     if (!order.getOrderItems().contains(orderItem)) {
       throw new IllegalArgumentException("Order item not found");
     }
@@ -56,9 +56,9 @@ public class OrderService{
 
   @Transactional
   public void deleteOrderItem(Integer orderId, Integer orderItemId) {
-    Order order = findById(orderId)
+    Order order = getOrder(orderId)
             .orElseThrow(() -> new RuntimeException("Order not found"));
-    OrderItem orderItem = orderItemService.findById(orderItemId)
+    OrderItem orderItem = orderItemService.getOrderItem(orderItemId)
             .orElseThrow(() -> new RuntimeException("Order item not found"));
 
     validateOrderItemDeletable(order, orderItem);

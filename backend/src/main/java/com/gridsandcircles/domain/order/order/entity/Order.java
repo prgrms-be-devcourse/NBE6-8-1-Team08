@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -47,5 +48,12 @@ public class Order {
     public void removeOrderItem(OrderItem orderItem) {
         orderItems.remove(orderItem);
         orderItem.setOrder(null);
+    }
+
+    public Optional<OrderItem> findItemById(int id) {
+        return orderItems
+                .stream()
+                .filter(i -> i.getOrderItemId() == id)
+                .findFirst();
     }
 }

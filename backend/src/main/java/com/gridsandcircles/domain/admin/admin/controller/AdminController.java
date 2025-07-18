@@ -9,8 +9,10 @@ import com.gridsandcircles.domain.admin.admin.dto.AdminSignupResponseDto;
 import com.gridsandcircles.domain.admin.admin.mapper.AdminMapper;
 import com.gridsandcircles.domain.admin.admin.service.AdminService;
 import com.gridsandcircles.domain.order.order.dto.OrderResponseDto;
+import com.gridsandcircles.domain.order.order.entity.Order;
 import com.gridsandcircles.domain.order.order.mapper.OrderMapper;
 import com.gridsandcircles.domain.order.order.service.OrderService;
+import com.gridsandcircles.domain.order.orderitem.entity.OrderItem;
 import com.gridsandcircles.global.ResultResponse;
 import com.gridsandcircles.global.ServiceException;
 import com.gridsandcircles.global.swagger.BadRequestApiResponse;
@@ -33,8 +35,9 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "AdminController", description = "관리자 API")
 public class AdminController {
 
-  private final AdminService adminService;
   private final OrderService orderService;
+
+  private final AdminService adminService;
 
   @PostMapping("/signup")
   @Operation(summary = "회원 가입")
@@ -90,5 +93,58 @@ public class AdminController {
 
     return ResponseEntity.ok()
         .body(new ResultResponse<>("Get all orders successful", orderDtos));
+  }
+
+  @DeleteMapping("/orders/{id}")
+  @Operation(summary = "주문 삭제, by order")
+  @ApiResponse(
+          responseCode = "200",
+          description = "order 단위로 주문 삭제 성공",
+          content = @Content(
+                  mediaType = APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ResultResponse.class),
+                  examples = @ExampleObject(value = """
+              {
+                "msg": "Delete order successful"
+              }
+              """
+                  )
+          )
+  )
+  public ResponseEntity<ResultResponse<Void>> deleteOrder(
+          @PathVariable int id
+  ) {
+    Order order = orderService.getOrder(id).get();
+
+    orderService.deleteOrder(order);
+
+    return ResponseEntity.ok()
+            .body(new ResultResponse<>("Delete order successful"));
+  }
+
+  @DeleteMapping("/orders/{orderId}/{id}")
+  @Operation(summary = "주문 삭제, by orderItem")
+  @ApiResponse(
+          responseCode = "200",
+          description = "product 단위로 주문 삭제 성공",
+          content = @Content(
+                  mediaType = APPLICATION_JSON_VALUE,
+                  schema = @Schema(implementation = ResultResponse.class),
+                  examples = @ExampleObject(value = """
+              {
+                "msg": "Delete orderItem successful"
+              }
+              """
+                  )
+          )
+  )
+  public ResponseEntity<ResultResponse<Void>> deleteOrderDetail(
+          @PathVariable int orderId,
+          @PathVariable int id
+  ) {
+    orderService.deleteOrderItem(orderId,id);
+
+    return ResponseEntity.ok()
+            .body(new ResultResponse<>("Delete orderItem successful"));
   }
 }
