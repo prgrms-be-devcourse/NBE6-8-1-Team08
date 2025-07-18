@@ -144,7 +144,11 @@ public class AdminController {
   public ResponseEntity<ResultResponse<OrderCancelResponseDto>> cancelOrderDetail(
           @RequestBody OrderCancelRequestDto orderCancelRequestDto
   ) {
-    List<Order> orders = orderService.cancelOrderByEmailAndProductId(orderCancelRequestDto.email(), orderCancelRequestDto.productId());
+    List<Integer> productIds = orderCancelRequestDto.products().stream()
+            .map(OrderCancelRequestDto.ProductRequestDto::productId)
+            .toList();
+
+    List<Order> orders = orderService.cancelOrderItemsByEmailAndProductIds(orderCancelRequestDto.email(), productIds);
 
     OrderCancelResponseDto responseDto = OrderMapper.toCancelResponseDto(orders.get(0));
 
