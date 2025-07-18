@@ -5,6 +5,7 @@ import com.gridsandcircles.domain.order.order.entity.Order;
 import com.gridsandcircles.domain.order.order.mapper.OrderMapper;
 import com.gridsandcircles.domain.order.order.service.OrderService;
 import com.gridsandcircles.global.ResultResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +16,8 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/orders")
+@RequestMapping("/orders")
+@Tag(name = "OrderController", description = "고객 API")
 public class OrderController {
 
     private final OrderService orderService;
@@ -33,8 +35,7 @@ public class OrderController {
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<ResultResponse<Void>> delete(@PathVariable int id) {
-        Order order = orderService.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+        Order order = orderService.getOrder(id);
 
         orderService.deleteOrder(order);
 
