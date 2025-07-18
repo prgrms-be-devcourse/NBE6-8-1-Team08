@@ -33,7 +33,7 @@ public class OrderController {
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<ResultResponse<Void>> delete(@PathVariable int id) {
-        Order order = orderService.findById(id)
+        Order order = orderService.getOrder(id)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
 
         orderService.deleteOrder(order);

@@ -25,7 +25,7 @@ public class OrderItemService {
         orderItemRepository.deleteById(orderItemId);
     }
 
-    public Optional<OrderItem> findById(int id) {
+    public Optional<OrderItem> getOrderItem(int id) {
         return orderItemRepository.findById(id);
     }
 }
