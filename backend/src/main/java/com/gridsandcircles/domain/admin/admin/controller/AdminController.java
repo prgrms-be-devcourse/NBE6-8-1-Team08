@@ -8,8 +8,11 @@ import com.gridsandcircles.domain.admin.admin.dto.AdminSignupRequestDto;
 import com.gridsandcircles.domain.admin.admin.dto.AdminSignupResponseDto;
 import com.gridsandcircles.domain.admin.admin.mapper.AdminMapper;
 import com.gridsandcircles.domain.admin.admin.service.AdminService;
-import com.gridsandcircles.domain.order.order.dto.OrderResponseDto;
+import com.gridsandcircles.domain.order.order.dto.OrderCancelRequestDto;
+import com.gridsandcircles.domain.order.order.dto.OrderCancelResponseDto;
+import com.gridsandcircles.domain.order.order.entity.Order;
 import com.gridsandcircles.domain.order.order.mapper.OrderMapper;
+import com.gridsandcircles.domain.order.order.dto.OrderResponseDto;
 import com.gridsandcircles.domain.order.order.service.OrderService;
 import com.gridsandcircles.global.ResultResponse;
 import com.gridsandcircles.global.ServiceException;
@@ -93,33 +96,36 @@ public class AdminController {
         .body(new ResultResponse<>("Get all orders successful", orderDtos));
   }
 
-  @PatchMapping("/orders/cancel/{id}")
-  @Operation(summary = "주문 취소, by order")
+  @PatchMapping("/orders/cancel")
+  @Operation(summary = "주문 취소")
   @ApiResponse(
           responseCode = "200",
-          description = "order 단위로 주문 취소 성공",
+          description = "email 단위로 주문 취소 성공",
           content = @Content(
                   mediaType = APPLICATION_JSON_VALUE,
                   schema = @Schema(implementation = ResultResponse.class),
                   examples = @ExampleObject(value = """
               {
-                "msg": "Cancel order successful"
+                "msg": "Cancel order successful",
+                "email" : "test"
               }
               """
                   )
           )
   )
-  public ResponseEntity<ResultResponse<Void>> cancelOrder(
-          @PathVariable int id
+  public ResponseEntity<ResultResponse<OrderCancelResponseDto>> cancelOrder(
+          @RequestBody OrderCancelRequestDto orderCancelRequestDto
   ) {
-    orderService.cancel(id);
+    List<Order> orders = orderService.cancelAllOrdersByEmail(orderCancelRequestDto.email());
+
+    OrderCancelResponseDto responseDto = OrderMapper.toCancelResponseDto(orders.get(0));
 
     return ResponseEntity.ok()
-            .body(new ResultResponse<>("Cancel order successful"));
+            .body(new ResultResponse<>("Cancel order successful", responseDto));
   }
 
-  @PatchMapping("/orders/cancel/{orderId}/{id}")
-  @Operation(summary = "주문 취소, by orderItem")
+  @PatchMapping("/orders/cancel-detail")
+  @Operation(summary = "상품 취소")
   @ApiResponse(
           responseCode = "200",
           description = "product 단위로 주문 취소 성공",
@@ -128,19 +134,21 @@ public class AdminController {
                   schema = @Schema(implementation = ResultResponse.class),
                   examples = @ExampleObject(value = """
               {
-                "msg": "Cancel orderItem successful"
+                "msg": "Cancel orderItem successful",
+                "email" : "test"
               }
               """
                   )
           )
   )
-  public ResponseEntity<ResultResponse<Void>> cancelOrderDetail(
-          @PathVariable int orderId,
-          @PathVariable int id
+  public ResponseEntity<ResultResponse<OrderCancelResponseDto>> cancelOrderDetail(
+          @RequestBody OrderCancelRequestDto orderCancelRequestDto
   ) {
-    orderService.cancelDetail(orderId, id);
+    List<Order> orders = orderService.cancelOrderByEmailAndProductId(orderCancelRequestDto.email(), orderCancelRequestDto.productId());
+
+    OrderCancelResponseDto responseDto = OrderMapper.toCancelResponseDto(orders.get(0));
 
     return ResponseEntity.ok()
-            .body(new ResultResponse<>("Cancel orderItem successful"));
+            .body(new ResultResponse<>("Cancel product successful", responseDto));
   }
 }

@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -85,11 +86,15 @@ public class AdminControllerTest {
   @DisplayName("주문 취소, by order")
   @WithMockUser(username = "admin")
   void cancelOrder() throws Exception {
-    int id = 1;
-
     ResultActions resultActions = mvc
         .perform(
-            patch("/admin/orders/cancel/" + id)
+            patch("/admin/orders/cancel")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("""
+                            {
+                             "email" : "order1@example.com"
+                            }
+                            """)
         )
         .andDo(print());
 
@@ -99,12 +104,14 @@ public class AdminControllerTest {
         .andExpect(jsonPath("$.msg").value("Cancel order successful"))
         .andExpect(status().isOk());
 
-    Order order = orderService.getOrder(id);
+    String email = "order1@example.com";
+    List<Order> orders = orderService.getOrdersByEmail(email);
+    Order order = orders.get(0);
     assertThat(order.isOrderStatus()).isFalse(); // orderStatus false 값 검증
   }
 
   @Test
-  @DisplayName("주문 취소, by orderItem")
+  @DisplayName("상품 취소, by orderItem")
   @WithMockUser(username = "admin")
   void cancelOrderDetail() throws Exception {
     int orderId = 1;
@@ -112,14 +119,21 @@ public class AdminControllerTest {
 
     ResultActions resultActions = mvc
         .perform(
-            patch("/admin/orders/cancel/%d/%d".formatted(orderId, id))
+            patch("/admin/orders/cancel-detail")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("""
+                            {
+                             "email" : "order1@example.com",
+                             "productId" : 1
+                            }
+                            """)
         )
         .andDo(print());
 
     resultActions
         .andExpect(handler().handlerType(AdminController.class))
         .andExpect(handler().methodName("cancelOrderDetail"))
-        .andExpect(jsonPath("$.msg").value("Cancel orderItem successful"))
+        .andExpect(jsonPath("$.msg").value("Cancel product successful"))
         .andExpect(status().isOk());
 
     Order order = orderService.getOrder(orderId);

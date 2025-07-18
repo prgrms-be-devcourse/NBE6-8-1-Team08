@@ -1,6 +1,6 @@
 package com.gridsandcircles.domain.order.order.mapper;
 
-import com.gridsandcircles.domain.order.order.dto.OrderRequestDto;
+import com.gridsandcircles.domain.order.order.dto.OrderCancelResponseDto;
 import com.gridsandcircles.domain.order.order.dto.OrderResponseDto;
 import com.gridsandcircles.domain.order.order.entity.Order;
 import com.gridsandcircles.domain.order.orderitem.mapper.OrderItemMapper;
@@ -21,5 +21,9 @@ public class OrderMapper {
                         .map(OrderItemMapper::toResponseDto)
                         .collect(Collectors.toList())
         );
+    }
+
+    public static OrderCancelResponseDto toCancelResponseDto(Order order) {
+        return new OrderCancelResponseDto(order.getEmail());
     }
 }
