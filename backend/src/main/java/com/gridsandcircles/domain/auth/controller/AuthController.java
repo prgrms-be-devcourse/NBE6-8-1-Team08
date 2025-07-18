@@ -4,9 +4,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import com.gridsandcircles.domain.auth.dto.LoginRequestDto;
 import com.gridsandcircles.domain.auth.dto.LoginResponseDto;
+import com.gridsandcircles.domain.auth.dto.RefreshTokenRequestDto;
+import com.gridsandcircles.domain.auth.dto.RefreshTokenResponseDto;
 import com.gridsandcircles.domain.auth.service.AuthService;
-import com.gridsandcircles.domain.auth.util.JwtUtil;
 import com.gridsandcircles.global.ResultResponse;
+import com.gridsandcircles.global.swagger.BadRequestApiResponse;
 import com.gridsandcircles.global.swagger.NotFoundApiResponse;
 import com.gridsandcircles.global.swagger.UnauthorizedApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,7 +30,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
   private final AuthService authService;
-  private final JwtUtil jwtUtil;
 
   @PostMapping("/login")
   @Operation(summary = "로그인")
@@ -56,12 +57,8 @@ public class AuthController {
   public ResponseEntity<ResultResponse<LoginResponseDto>> login(
       @Valid @RequestBody LoginRequestDto loginRequestDto
   ) {
-    String adminId = authService.loginAdmin(loginRequestDto.adminId(), loginRequestDto.password());
-    String accessToken = jwtUtil.generateToken(adminId);
-    String refreshToken = authService.createRefreshToken(adminId);
-
     return ResponseEntity.ok().body(new ResultResponse<>("Login successful",
-        new LoginResponseDto(adminId, accessToken, refreshToken)));
+        authService.loginAdmin(loginRequestDto.adminId(), loginRequestDto.password())));
   }
 
   @DeleteMapping("/logout")
@@ -70,5 +67,38 @@ public class AuthController {
   public ResponseEntity<Void> logout(Principal principal) {
     authService.deleteRefreshToken(principal.getName());
     return ResponseEntity.noContent().build();
+  }
+
+  @PostMapping("/refresh")
+  @Operation(summary = "Access token 재발급 및 새 Refresh token으로 교체")
+  @ApiResponse(
+      responseCode = "200",
+      description = "토큰 재발급 성공",
+      content = @Content(
+          mediaType = APPLICATION_JSON_VALUE,
+          schema = @Schema(implementation = ResultResponse.class),
+          examples = @ExampleObject(value = """
+              {
+                "msg": "Refreshing tokens successful",
+                    "data": {
+                        "accessToken": "eyJhbGciOiJIUzI1N...",
+                        "refreshToken": "fed97514-7676-4..."
+                    }
+              }
+              """
+          )
+      )
+  )
+  @BadRequestApiResponse
+  @UnauthorizedApiResponse
+  @NotFoundApiResponse
+  public ResponseEntity<ResultResponse<RefreshTokenResponseDto>> refresh(
+      @RequestBody RefreshTokenRequestDto refreshTokenRequestDto
+  ) {
+    RefreshTokenResponseDto refreshTokenResponseDto = authService.refreshTokens(
+        refreshTokenRequestDto.expiredAccessToken(), refreshTokenRequestDto.originalRefreshToken());
+
+    return ResponseEntity.ok()
+        .body(new ResultResponse<>("Refreshing tokens successful", refreshTokenResponseDto));
   }
 }
