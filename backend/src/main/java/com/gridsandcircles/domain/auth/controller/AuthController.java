@@ -30,7 +30,7 @@ public class AuthController {
   private final AuthService authService;
   private final JwtUtil jwtUtil;
 
-  @PostMapping("login")
+  @PostMapping("/login")
   @Operation(summary = "로그인")
   @ApiResponse(
       responseCode = "200",
