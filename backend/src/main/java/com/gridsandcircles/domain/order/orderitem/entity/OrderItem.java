@@ -31,4 +31,8 @@ public class OrderItem {
 
     @Column(name = "order_item_status")
     private boolean orderItemStatus;
+
+    public void cancel() {
+        this.orderItemStatus = false;
+    }
 }

@@ -56,4 +56,8 @@ public class Order {
                 .filter(i -> i.getOrderItemId() == id)
                 .findFirst();
     }
+
+    public void cancel() {
+        this.orderStatus = false;
+    }
 }

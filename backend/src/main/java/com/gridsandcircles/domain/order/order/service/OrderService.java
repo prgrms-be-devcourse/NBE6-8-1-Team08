@@ -66,4 +66,18 @@ public class OrderService{
     order.removeOrderItem(orderItem);
     orderItemService.deleteOrderItem(orderItem.getOrderItemId());
   }
+
+  @Transactional
+  public void cancel(int id) {
+    Order order = orderRepository.findById(id).get();
+    order.cancel();
+  }
+
+  @Transactional
+  public void cancelDetail(int orderId, int id) {
+    Order order = orderRepository.findById(orderId).get();
+
+    OrderItem orderItem = order.findItemById(id).get();
+    orderItem.cancel();
+  }
 }

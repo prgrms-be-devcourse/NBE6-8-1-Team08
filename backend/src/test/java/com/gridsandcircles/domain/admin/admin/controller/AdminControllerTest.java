@@ -1,13 +1,13 @@
 package com.gridsandcircles.domain.admin.admin.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.gridsandcircles.domain.admin.admin.controller.AdminController;
+import com.gridsandcircles.domain.order.orderitem.entity.OrderItem;
 import com.gridsandcircles.domain.order.order.entity.Order;
 import com.gridsandcircles.domain.order.order.service.OrderService;
 
@@ -77,41 +77,48 @@ public class AdminControllerTest {
     }
 
     @Test
-    @DisplayName("주문 삭제, by order")
+    @DisplayName("주문 취소, by order")
     @WithMockUser(username = "admin")
-    void deleteOrder() throws Exception {
+    void cancelOrder() throws Exception {
         int id = 1;
 
         ResultActions resultActions = mvc
                 .perform(
-                        delete("/admin/orders/" + id)
+                        patch("/admin/orders/cancel/" + id)
                 )
                 .andDo(print());
 
         resultActions
                 .andExpect(handler().handlerType(AdminController.class))
-                .andExpect(handler().methodName("deleteOrder"))
-                .andExpect(jsonPath("$.msg").value("Delete order successful"))
+                .andExpect(handler().methodName("cancelOrder"))
+                .andExpect(jsonPath("$.msg").value("Cancel order successful"))
                 .andExpect(status().isOk());
+
+        Order order = orderService.getOrder(id).get();
+        assertThat(order.isOrderStatus()).isFalse(); // orderStatus false 값 검증
     }
 
     @Test
-    @DisplayName("주문 삭제, by orderItem")
+    @DisplayName("주문 취소, by orderItem")
     @WithMockUser(username = "admin")
-    void deleteOrderDetail() throws Exception {
+    void cancelOrderDetail() throws Exception {
         int orderId = 1;
         int id = 1;
 
         ResultActions resultActions = mvc
                 .perform(
-                        delete("/admin/orders/%d/%d".formatted(orderId, id))
+                        patch("/admin/orders/cancel/%d/%d".formatted(orderId, id))
                 )
                 .andDo(print());
 
         resultActions
                 .andExpect(handler().handlerType(AdminController.class))
-                .andExpect(handler().methodName("deleteOrderDetail"))
-                .andExpect(jsonPath("$.msg").value("Delete orderItem successful"))
+                .andExpect(handler().methodName("cancelOrderDetail"))
+                .andExpect(jsonPath("$.msg").value("Cancel orderItem successful"))
                 .andExpect(status().isOk());
+
+        Order order = orderService.getOrder(orderId).get();
+        OrderItem orderItem = order.findItemById(id).get();
+        assertThat(orderItem.isOrderItemStatus()).isFalse(); // orderItemStatus false 값 검증
     }
 }

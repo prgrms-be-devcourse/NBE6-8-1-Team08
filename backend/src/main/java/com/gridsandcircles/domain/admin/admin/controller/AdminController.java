@@ -9,10 +9,8 @@ import com.gridsandcircles.domain.admin.admin.dto.AdminSignupResponseDto;
 import com.gridsandcircles.domain.admin.admin.mapper.AdminMapper;
 import com.gridsandcircles.domain.admin.admin.service.AdminService;
 import com.gridsandcircles.domain.order.order.dto.OrderResponseDto;
-import com.gridsandcircles.domain.order.order.entity.Order;
 import com.gridsandcircles.domain.order.order.mapper.OrderMapper;
 import com.gridsandcircles.domain.order.order.service.OrderService;
-import com.gridsandcircles.domain.order.orderitem.entity.OrderItem;
 import com.gridsandcircles.global.ResultResponse;
 import com.gridsandcircles.global.ServiceException;
 import com.gridsandcircles.global.swagger.BadRequestApiResponse;
@@ -95,56 +93,54 @@ public class AdminController {
         .body(new ResultResponse<>("Get all orders successful", orderDtos));
   }
 
-  @DeleteMapping("/orders/{id}")
-  @Operation(summary = "주문 삭제, by order")
+  @PatchMapping("/orders/cancel/{id}")
+  @Operation(summary = "주문 취소, by order")
   @ApiResponse(
           responseCode = "200",
-          description = "order 단위로 주문 삭제 성공",
+          description = "order 단위로 주문 취소 성공",
           content = @Content(
                   mediaType = APPLICATION_JSON_VALUE,
                   schema = @Schema(implementation = ResultResponse.class),
                   examples = @ExampleObject(value = """
               {
-                "msg": "Delete order successful"
+                "msg": "Cancel order successful"
               }
               """
                   )
           )
   )
-  public ResponseEntity<ResultResponse<Void>> deleteOrder(
+  public ResponseEntity<ResultResponse<Void>> cancelOrder(
           @PathVariable int id
   ) {
-    Order order = orderService.getOrder(id).get();
-
-    orderService.deleteOrder(order);
+    orderService.cancel(id);
 
     return ResponseEntity.ok()
-            .body(new ResultResponse<>("Delete order successful"));
+            .body(new ResultResponse<>("Cancel order successful"));
   }
 
-  @DeleteMapping("/orders/{orderId}/{id}")
-  @Operation(summary = "주문 삭제, by orderItem")
+  @PatchMapping("/orders/cancel/{orderId}/{id}")
+  @Operation(summary = "주문 취소, by orderItem")
   @ApiResponse(
           responseCode = "200",
-          description = "product 단위로 주문 삭제 성공",
+          description = "product 단위로 주문 취소 성공",
           content = @Content(
                   mediaType = APPLICATION_JSON_VALUE,
                   schema = @Schema(implementation = ResultResponse.class),
                   examples = @ExampleObject(value = """
               {
-                "msg": "Delete orderItem successful"
+                "msg": "Cancel orderItem successful"
               }
               """
                   )
           )
   )
-  public ResponseEntity<ResultResponse<Void>> deleteOrderDetail(
+  public ResponseEntity<ResultResponse<Void>> cancelOrderDetail(
           @PathVariable int orderId,
           @PathVariable int id
   ) {
-    orderService.deleteOrderItem(orderId,id);
+    orderService.cancelDetail(orderId, id);
 
     return ResponseEntity.ok()
-            .body(new ResultResponse<>("Delete orderItem successful"));
+            .body(new ResultResponse<>("Cancel orderItem successful"));
   }
 }
