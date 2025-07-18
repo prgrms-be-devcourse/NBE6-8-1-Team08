@@ -1,5 +1,6 @@
 package com.gridsandcircles.domain.order.order.controller;
 
+import com.gridsandcircles.domain.order.order.dto.OrderRequestDto;
 import com.gridsandcircles.domain.order.order.dto.OrderResponseDto;
 import com.gridsandcircles.domain.order.order.entity.Order;
 import com.gridsandcircles.domain.order.order.mapper.OrderMapper;
@@ -30,6 +31,24 @@ public class OrderController {
                 .toList();
 
         return ResponseEntity.ok().body(new ResultResponse<>("Get order successful", items));
+    }
+
+    @PostMapping("/{num}")
+    public ResponseEntity<ResultResponse<OrderResponseDto>> createOrder(
+            @PathVariable int num,
+            @RequestBody OrderRequestDto requestDto
+    ) {
+        OrderResponseDto responseDto = orderService.createOrder(requestDto);
+        return ResponseEntity.ok(new ResultResponse<>("Order created successfully", responseDto));
+    }
+
+    @GetMapping(params = "email")
+    public ResponseEntity<ResultResponse<List<OrderResponseDto>>> getOrdersByEmail(@RequestParam String email) {
+        List<OrderResponseDto> orders = orderService.getOrdersByEmail(email)
+                .stream()
+                .map(OrderMapper::toResponseDto)
+                .toList();
+        return ResponseEntity.ok(new ResultResponse<>("Get orders by email successful", orders));
     }
 
     @DeleteMapping("/{id}")
