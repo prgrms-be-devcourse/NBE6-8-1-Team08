@@ -11,14 +11,8 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    public long count() {
-        return productRepository.count();
-    }
-    public Product createProduct(Product product){
+        public Product createProduct(Product product){
         productRepository.save(product);
         return product;
-    }
-    public void deleteProduct(Integer productId){
-        productRepository.deleteById(productId);
     }
 }
