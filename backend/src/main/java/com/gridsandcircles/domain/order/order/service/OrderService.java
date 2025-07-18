@@ -1,9 +1,14 @@
 package com.gridsandcircles.domain.order.order.service;
 
+import com.gridsandcircles.domain.order.order.dto.OrderRequestDto;
+import com.gridsandcircles.domain.order.order.dto.OrderResponseDto;
 import com.gridsandcircles.domain.order.order.entity.Order;
+import com.gridsandcircles.domain.order.order.mapper.OrderMapper;
 import com.gridsandcircles.domain.order.order.repository.OrderRepository;
 import com.gridsandcircles.domain.order.orderitem.entity.OrderItem;
 import com.gridsandcircles.domain.order.orderitem.service.OrderItemService;
+import com.gridsandcircles.domain.product.product.entity.Product;
+import com.gridsandcircles.domain.product.product.service.ProductService;
 import com.gridsandcircles.global.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +24,7 @@ public class OrderService{
 
   private final OrderRepository orderRepository;
   private final OrderItemService orderItemService;
+  private final ProductService productService;
 
   @Transactional(readOnly = true)
   public long countOrders() {
@@ -31,8 +37,31 @@ public class OrderService{
   }
 
   @Transactional
-  public void createOrder(Order order) {
+  public OrderResponseDto createOrder(OrderRequestDto dto) {
+    Order order = Order.builder()
+            .email(dto.email())
+            .address(dto.address())
+            .orderStatus(true)
+            .deliveryStatus(false)
+            .build();
+
+    for (OrderRequestDto.OrderItemRequestDto itemDto : dto.orderItems()) {
+      Product product = productService.getProductById(itemDto.productId());
+      OrderItem orderItem = OrderItem.builder()
+              .product(product)
+              .orderCount(itemDto.count())
+              .orderItemStatus(true)
+              .build();
+      order.addOrderItem(orderItem);
+    }
+
     orderRepository.save(order);
+    return OrderMapper.toResponseDto(order);
+  }
+
+  @Transactional(readOnly = true)
+  public java.util.List<Order> getOrdersByEmail(String email) {
+    return orderRepository.findByEmail(email);
   }
 
   @Transactional
