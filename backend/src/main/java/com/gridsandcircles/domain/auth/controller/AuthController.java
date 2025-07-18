@@ -2,8 +2,8 @@ package com.gridsandcircles.domain.auth.controller;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import com.gridsandcircles.domain.auth.LoginResponseDto;
 import com.gridsandcircles.domain.auth.dto.LoginRequestDto;
+import com.gridsandcircles.domain.auth.dto.LoginResponseDto;
 import com.gridsandcircles.domain.auth.service.AuthService;
 import com.gridsandcircles.domain.auth.util.JwtUtil;
 import com.gridsandcircles.global.ResultResponse;
@@ -16,7 +16,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,7 +60,7 @@ public class AuthController {
   ) {
     String adminId = authService.loginAdmin(loginRequestDto.adminId(), loginRequestDto.password());
     String accessToken = jwtUtil.generateToken(adminId);
-    String refreshToken = UUID.randomUUID().toString();
+    String refreshToken = authService.createRefreshToken();
 
     return ResponseEntity.ok().body(new ResultResponse<>("Login successful",
         new LoginResponseDto(adminId, accessToken, refreshToken)));
