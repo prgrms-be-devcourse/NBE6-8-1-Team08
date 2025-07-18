@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
         schema = @Schema(implementation = ResultResponse.class),
         examples = @ExampleObject(value = """
             {
-              "msg": "Password does not match",
+              "msg": "Authorization failed",
               "data": null
             }
             """
