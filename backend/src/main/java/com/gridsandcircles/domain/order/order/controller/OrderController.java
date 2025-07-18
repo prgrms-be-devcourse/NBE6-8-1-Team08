@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @RestController
@@ -34,7 +35,7 @@ public class OrderController {
     @Transactional
     public ResponseEntity<ResultResponse<Void>> delete(@PathVariable int id) {
         Order order = orderService.getOrder(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+                .orElseThrow(() -> new NoSuchElementException("Order not found"));
 
         orderService.deleteOrder(order);
 

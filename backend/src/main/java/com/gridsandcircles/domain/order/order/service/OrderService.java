@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -48,10 +49,10 @@ public class OrderService{
   @Transactional
   protected void validateOrderItemDeletable(Order order, OrderItem orderItem) {
     if (!order.getOrderItems().contains(orderItem)) {
-      throw new ServiceException(HttpStatus.NOT_FOUND, "Order item not found");
+      throw new NoSuchElementException("Order item not found");
     }
 
-    if (!(order.isOrderStatus() && !order.isDeliveryStatus())) {
+    if (!(orderItem.isOrderItemStatus() && !order.isDeliveryStatus())) {//수정
       throw new ServiceException(HttpStatus.BAD_REQUEST, "Cannot delete item from active or incomplete order");
     }
   }
@@ -59,10 +60,9 @@ public class OrderService{
   @Transactional
   public void deleteOrderItem(Integer orderId, Integer orderItemId) {
     Order order = getOrder(orderId)
-            .orElseThrow(() -> new ServiceException(HttpStatus.NOT_FOUND, "Order not found"));
+            .orElseThrow(() -> new NoSuchElementException("Order not found"));
 
-    OrderItem orderItem = orderItemService.getOrderItem(orderItemId)
-            .orElseThrow(() -> new ServiceException(HttpStatus.NOT_FOUND, "Order item not found"));
+    OrderItem orderItem = orderItemService.getOrderItem(orderItemId);
 
     validateOrderItemDeletable(order, orderItem);
 
