@@ -1,6 +1,8 @@
 package com.gridsandcircles.domain.order.order.service;
 
+import com.gridsandcircles.domain.order.order.dto.CancelOrderResponseDto;
 import com.gridsandcircles.domain.order.order.entity.Order;
+import com.gridsandcircles.domain.order.order.mapper.OrderMapper;
 import com.gridsandcircles.domain.order.order.repository.OrderRepository;
 import com.gridsandcircles.domain.order.orderitem.entity.OrderItem;
 import com.gridsandcircles.domain.order.orderitem.service.OrderItemService;
@@ -10,8 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -77,10 +81,29 @@ public class OrderService{
   }
 
   @Transactional
-  public void cancelDetail(int orderId, int id) {
+  public CancelOrderResponseDto cancelDetail(int orderId, int id) {
     Order order = orderRepository.findById(orderId).get();
 
     OrderItem orderItem = order.findItemById(id).get();
     orderItem.cancel();
+
+    return OrderMapper.toCancelOrderResponseDto(order);
+  }
+
+  @Transactional
+  public List<CancelOrderResponseDto> cancelDetails(int orderId, List<Integer> orderItemIds) {
+    List<CancelOrderResponseDto> results = new ArrayList<>();
+    for (Integer itemId : orderItemIds) {
+      CancelOrderResponseDto responseDto = cancelDetail(orderId, itemId);
+      results.add(responseDto);
+    }
+    return results;
+  }
+
+  public Optional<Integer> findOrderIdByEmail(String email, List<Order> orders) {
+    return orders.stream()
+            .filter(order -> order.getEmail().equals(email))
+            .map(Order::getOrderId)
+            .findFirst();
   }
 }

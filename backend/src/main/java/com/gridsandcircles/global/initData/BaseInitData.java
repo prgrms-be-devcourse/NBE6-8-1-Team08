@@ -26,7 +26,7 @@ public class BaseInitData {
 
     if (orderService.countOrders() == 0) {
       Order order1 = Order.builder()
-              .email("order1@example.com")
+              .email("mario@gmail.com")
               .address("서울")
               .orderStatus(true)
               .deliveryStatus(false)
