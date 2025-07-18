@@ -7,5 +7,6 @@ public record OrderItemResponseDto(
         Integer orderItemId,
         String productName,
         int orderCount,
-        int productPrice
+        int productPrice,
+        boolean orderItemStatus
 ) {}

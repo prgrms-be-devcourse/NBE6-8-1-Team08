@@ -10,7 +10,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.gridsandcircles.domain.admin.admin.controller.AdminController;
 import com.gridsandcircles.domain.order.order.entity.Order;
 import com.gridsandcircles.domain.order.order.service.OrderService;
+
 import java.util.List;
+
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,65 +31,87 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureMockMvc
 public class AdminControllerTest {
 
-  @Autowired
-  private OrderService orderService;
+    @Autowired
+    private OrderService orderService;
 
-  @Autowired
-  private MockMvc mvc;
+    @Autowired
+    private MockMvc mvc;
 
-  @Test
-  @DisplayName("모든 주문 조회")
-  @WithMockUser(username = "admin")
-  void getOrders() throws Exception {
-    ResultActions resultActions = mvc
-        .perform(
-            get("/admin/orders")
-        )
-        .andDo(print());
+    @Test
+    @DisplayName("모든 주문 조회")
+    @WithMockUser(username = "admin")
+    void getOrders() throws Exception {
+        ResultActions resultActions = mvc
+                .perform(
+                        get("/admin/orders")
+                )
+                .andDo(print());
 
-    List<Order> orders = orderService.getOrders();
+        List<Order> orders = orderService.getOrders();
 
-    resultActions
-        .andExpect(handler().handlerType(AdminController.class))
-        .andExpect(handler().methodName("getOrders"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.length()").value(orders.size()));
-  }
+        resultActions
+                .andExpect(handler().handlerType(AdminController.class))
+                .andExpect(handler().methodName("getOrders"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.msg").value("Get all orders successful"))
+                .andExpect(jsonPath("$.data.length()").value(orders.size()));
 
-  @Test
-  @DisplayName("주문 삭제, by order")
-  @WithMockUser(username = "admin")
-  void deleteOrder() throws Exception {
-    int id = 1;
+        for (int i = 0; i < orders.size(); i++) {
+            Order order = orders.get(i);
+            resultActions
+                    .andExpect(jsonPath("$.data[%d].orderId".formatted(i)).value(order.getOrderId()))
+                    .andExpect(jsonPath("$.data[%d].email".formatted(i)).value(order.getEmail()))
+                    .andExpect(jsonPath("$.data[%d].address".formatted(i)).value(order.getAddress()))
+                    .andExpect(jsonPath("$.data[%d].createdAt".formatted(i)).value(Matchers.startsWith(order.getCreatedAt().toString().substring(0, 10))))
+                    .andExpect(jsonPath("$.data[%d].orderStatus".formatted(i)).value(order.isOrderStatus()))
+                    .andExpect(jsonPath("$.data[%d].deliveryStatus".formatted(i)).value(order.isDeliveryStatus()));
 
-    ResultActions resultActions = mvc
-            .perform(
-                    delete("/admin/orders/" + id)
-            )
-            .andDo(print());
+            for (int j = 0 ; j < order.getOrderItems().size() ; j++) {
+                resultActions
+                        .andExpect(jsonPath("$.data[%d].orderItems[%d].orderItemId".formatted(i, j)).value(order.getOrderItems().get(j).getOrderItemId()))
+                        .andExpect(jsonPath("$.data[%d].orderItems[%d].productName".formatted(i, j)).value(order.getOrderItems().get(j).getProduct().getName()))
+                        .andExpect(jsonPath("$.data[%d].orderItems[%d].orderCount".formatted(i, j)).value(order.getOrderItems().get(j).getOrderCount()))
+                        .andExpect(jsonPath("$.data[%d].orderItems[%d].productPrice".formatted(i, j)).value(order.getOrderItems().get(j).getProduct().getPrice()));
+            }
+        }
+    }
 
-    resultActions
-            .andExpect(handler().handlerType(AdminController.class))
-            .andExpect(handler().methodName("deleteOrder"))
-            .andExpect(status().isOk());
-  }
+    @Test
+    @DisplayName("주문 삭제, by order")
+    @WithMockUser(username = "admin")
+    void deleteOrder() throws Exception {
+        int id = 1;
 
-  @Test
-  @DisplayName("주문 삭제, by orderItem")
-  @WithMockUser(username = "admin")
-  void deleteOrderDetail() throws Exception {
-    int orderId = 1;
-    int id = 1;
+        ResultActions resultActions = mvc
+                .perform(
+                        delete("/admin/orders/" + id)
+                )
+                .andDo(print());
 
-    ResultActions resultActions = mvc
-            .perform(
-                    delete("/admin/orders/%d/%d".formatted(orderId, id))
-            )
-            .andDo(print());
+        resultActions
+                .andExpect(handler().handlerType(AdminController.class))
+                .andExpect(handler().methodName("deleteOrder"))
+                .andExpect(jsonPath("$.msg").value("Delete order successful"))
+                .andExpect(status().isOk());
+    }
 
-    resultActions
-            .andExpect(handler().handlerType(AdminController.class))
-            .andExpect(handler().methodName("deleteOrderDetail"))
-            .andExpect(status().isOk());
-  }
+    @Test
+    @DisplayName("주문 삭제, by orderItem")
+    @WithMockUser(username = "admin")
+    void deleteOrderDetail() throws Exception {
+        int orderId = 1;
+        int id = 1;
+
+        ResultActions resultActions = mvc
+                .perform(
+                        delete("/admin/orders/%d/%d".formatted(orderId, id))
+                )
+                .andDo(print());
+
+        resultActions
+                .andExpect(handler().handlerType(AdminController.class))
+                .andExpect(handler().methodName("deleteOrderDetail"))
+                .andExpect(jsonPath("$.msg").value("Delete orderItem successful"))
+                .andExpect(status().isOk());
+    }
 }

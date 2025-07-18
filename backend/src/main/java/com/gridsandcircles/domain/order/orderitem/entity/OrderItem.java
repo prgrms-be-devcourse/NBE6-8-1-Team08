@@ -28,4 +28,7 @@ public class OrderItem {
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
+
+    @Column(name = "order_item_status")
+    private boolean orderItemStatus;
 }
