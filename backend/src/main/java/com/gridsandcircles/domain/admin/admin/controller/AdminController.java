@@ -37,7 +37,6 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
 
   private final OrderService orderService;
-
   private final AdminService adminService;
 
   @PostMapping("/signup")
@@ -68,9 +67,8 @@ public class AdminController {
       throw new ServiceException(BAD_REQUEST, "Password does not match");
     }
 
-    AdminSignupResponseDto adminSignupResponseDto = AdminMapper.toDto(
-        adminService.createAdmin(adminSignupRequestDto.adminId(),
-            adminSignupRequestDto.inputPassword()));
+    AdminSignupResponseDto adminSignupResponseDto = AdminMapper.toDto(adminService.createAdmin(
+        adminSignupRequestDto.adminId(), adminSignupRequestDto.inputPassword()));
 
     return ResponseEntity.status(CREATED)
         .body(new ResultResponse<>("Sign up successful", adminSignupResponseDto));
@@ -99,56 +97,56 @@ public class AdminController {
   @PatchMapping("/orders/cancel")
   @Operation(summary = "주문 취소")
   @ApiResponse(
-          responseCode = "200",
-          description = "email 단위로 주문 취소 성공",
-          content = @Content(
-                  mediaType = APPLICATION_JSON_VALUE,
-                  schema = @Schema(implementation = ResultResponse.class),
-                  examples = @ExampleObject(value = """
+      responseCode = "200",
+      description = "email 단위로 주문 취소 성공",
+      content = @Content(
+          mediaType = APPLICATION_JSON_VALUE,
+          schema = @Schema(implementation = ResultResponse.class),
+          examples = @ExampleObject(value = """
               {
                 "msg": "Cancel order successful",
                 "email" : "test"
               }
               """
-                  )
           )
+      )
   )
   public ResponseEntity<ResultResponse<OrderCancelResponseDto>> cancelOrder(
-          @RequestBody OrderCancelRequestDto orderCancelRequestDto
+      @RequestBody OrderCancelRequestDto orderCancelRequestDto
   ) {
     List<Order> orders = orderService.cancelAllOrdersByEmail(orderCancelRequestDto.email());
 
     OrderCancelResponseDto responseDto = OrderMapper.toCancelResponseDto(orders.get(0));
 
     return ResponseEntity.ok()
-            .body(new ResultResponse<>("Cancel order successful", responseDto));
+        .body(new ResultResponse<>("Cancel order successful", responseDto));
   }
 
   @PatchMapping("/orders/cancel-detail")
   @Operation(summary = "상품 취소")
   @ApiResponse(
-          responseCode = "200",
-          description = "product 단위로 주문 취소 성공",
-          content = @Content(
-                  mediaType = APPLICATION_JSON_VALUE,
-                  schema = @Schema(implementation = ResultResponse.class),
-                  examples = @ExampleObject(value = """
+      responseCode = "200",
+      description = "product 단위로 주문 취소 성공",
+      content = @Content(
+          mediaType = APPLICATION_JSON_VALUE,
+          schema = @Schema(implementation = ResultResponse.class),
+          examples = @ExampleObject(value = """
               {
                 "msg": "Cancel orderItem successful",
                 "email" : "test"
               }
               """
-                  )
           )
+      )
   )
   public ResponseEntity<ResultResponse<OrderCancelResponseDto>> cancelOrderDetail(
-          @RequestBody OrderCancelRequestDto orderCancelRequestDto
+      @RequestBody OrderCancelRequestDto orderCancelRequestDto
   ) {
     List<Order> orders = orderService.cancelOrderByEmailAndProductId(orderCancelRequestDto.email(), orderCancelRequestDto.productId());
 
     OrderCancelResponseDto responseDto = OrderMapper.toCancelResponseDto(orders.get(0));
 
     return ResponseEntity.ok()
-            .body(new ResultResponse<>("Cancel product successful", responseDto));
+        .body(new ResultResponse<>("Cancel product successful", responseDto));
   }
 }

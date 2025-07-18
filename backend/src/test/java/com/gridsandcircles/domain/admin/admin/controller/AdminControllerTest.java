@@ -1,16 +1,21 @@
 package com.gridsandcircles.domain.admin.admin.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.gridsandcircles.domain.admin.admin.entity.Admin;
+import com.gridsandcircles.domain.admin.admin.service.AdminService;
 import com.gridsandcircles.domain.order.order.entity.Order;
 import com.gridsandcircles.domain.order.order.service.OrderService;
 import com.gridsandcircles.domain.order.orderitem.entity.OrderItem;
+import com.gridsandcircles.global.ServiceException;
 import java.util.List;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
@@ -24,6 +29,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -35,7 +41,174 @@ public class AdminControllerTest {
   private OrderService orderService;
 
   @Autowired
+  private AdminService adminService;
+
+  @Autowired
   private MockMvc mvc;
+
+
+  @Test
+  @DisplayName("회원가입: 관리자 ID 길이 4 미만 시 400 Bad Request 발생")
+  void signUp_1() throws Exception {
+    ResultActions resultActions = mvc.perform(
+        post("/admin/signup")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""
+                {
+                 "adminId": "tes",
+                 "inputPassword": "1234pw1234",
+                 "confirmPassword": "1234pw1234"
+                }
+                """)
+    ).andDo(print());
+
+    resultActions
+        .andExpect(handler().handlerType(AdminController.class))
+        .andExpect(handler().methodName("signup"))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.msg").value(Matchers.containsString("adminId")))
+        .andExpect(jsonPath("$.msg").value(Matchers.containsString("Size")))
+        .andExpect(jsonPath("$.data").value(Matchers.nullValue()))
+        .andExpect(result -> assertInstanceOf(MethodArgumentNotValidException.class,
+            result.getResolvedException()));
+  }
+
+  @Test
+  @DisplayName("회원가입: 관리자 ID 길이 10 초과 시 400 Bad Request 발생")
+  void signUp_2() throws Exception {
+    ResultActions resultActions = mvc.perform(
+        post("/admin/signup")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""
+                {
+                 "adminId": "test1234567",
+                 "inputPassword": "1234pw1234",
+                 "confirmPassword": "1234pw1234"
+                }
+                """)
+    ).andDo(print());
+
+    resultActions
+        .andExpect(handler().handlerType(AdminController.class))
+        .andExpect(handler().methodName("signup"))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.msg").value(Matchers.containsString("adminId")))
+        .andExpect(jsonPath("$.msg").value(Matchers.containsString("Size")))
+        .andExpect(jsonPath("$.data").value(Matchers.nullValue()))
+        .andExpect(result -> assertInstanceOf(MethodArgumentNotValidException.class,
+            result.getResolvedException()));
+  }
+
+  @Test
+  @DisplayName("회원가입: 관리자 비밀번호 길이 10 미만 시 400 Bad Request 발생")
+  void signUp_3() throws Exception {
+    ResultActions resultActions = mvc.perform(
+        post("/admin/signup")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""
+                {
+                 "adminId": "test",
+                 "inputPassword": "1234pw123",
+                 "confirmPassword": "1234pw123"
+                }
+                """)
+    ).andDo(print());
+
+    resultActions
+        .andExpect(handler().handlerType(AdminController.class))
+        .andExpect(handler().methodName("signup"))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.msg").value(Matchers.containsString("inputPassword")))
+        .andExpect(jsonPath("$.msg").value(Matchers.containsString("confirmPassword")))
+        .andExpect(jsonPath("$.msg").value(Matchers.containsString("Size")))
+        .andExpect(jsonPath("$.data").value(Matchers.nullValue()))
+        .andExpect(result -> assertInstanceOf(MethodArgumentNotValidException.class,
+            result.getResolvedException()));
+  }
+
+  @Test
+  @DisplayName("회원가입: 관리자 비밀번호 길이 20 초과 시 400 Bad Request 발생")
+  void signUp_4() throws Exception {
+    ResultActions resultActions = mvc.perform(
+        post("/admin/signup")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""
+                {
+                 "adminId": "test",
+                 "inputPassword": "this password is more than 20 length",
+                 "confirmPassword": "this password is more than 20 length"
+                }
+                """)
+    ).andDo(print());
+
+    resultActions
+        .andExpect(handler().handlerType(AdminController.class))
+        .andExpect(handler().methodName("signup"))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.msg").value(Matchers.containsString("inputPassword")))
+        .andExpect(jsonPath("$.msg").value(Matchers.containsString("confirmPassword")))
+        .andExpect(jsonPath("$.msg").value(Matchers.containsString("Size")))
+        .andExpect(jsonPath("$.data").value(Matchers.nullValue()))
+        .andExpect(result -> assertInstanceOf(MethodArgumentNotValidException.class,
+            result.getResolvedException()));
+  }
+
+  @Test
+  @DisplayName("회원가입: 비밀번호와 비밀번호 확인 불일치 시 400 Bad Request 발생")
+  void signUp_5() throws Exception {
+    ResultActions resultActions = mvc.perform(
+        post("/admin/signup")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("""
+                {
+                 "adminId": "test",
+                 "inputPassword": "this password",
+                 "confirmPassword": "this passwords"
+                }
+                """)
+    ).andDo(print());
+
+    resultActions
+        .andExpect(handler().handlerType(AdminController.class))
+        .andExpect(handler().methodName("signup"))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.msg").value("Password does not match"))
+        .andExpect(jsonPath("$.data").value(Matchers.nullValue()))
+        .andExpect(
+            result -> assertInstanceOf(ServiceException.class, result.getResolvedException()));
+  }
+
+  @Test
+  @DisplayName("회원가입: 가입하려는 아이디 이미 존재 시 409 Conflict 발생")
+  void signUp_6() throws Exception {
+    doSignup("test", "pwd1234pwd");
+
+    ResultActions resultActions = doSignup("test", "secret number");
+
+    resultActions
+        .andExpect(handler().handlerType(AdminController.class))
+        .andExpect(handler().methodName("signup"))
+        .andExpect(status().isConflict())
+        .andExpect(jsonPath("$.msg").value("Admin id test already exists"))
+        .andExpect(jsonPath("$.data").value(Matchers.nullValue()))
+        .andExpect(
+            result -> assertInstanceOf(ServiceException.class, result.getResolvedException()));
+  }
+
+  @Test
+  @DisplayName("회원가입: 201 Created 성공")
+  void signUp_7() throws Exception {
+    ResultActions resultActions = doSignup("test", "secret number");
+
+    Admin admin = adminService.getAdmin("test");
+
+    resultActions
+        .andExpect(handler().handlerType(AdminController.class))
+        .andExpect(handler().methodName("signup"))
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath("$.msg").value("Sign up successful"))
+        .andExpect(jsonPath("$.data.adminId").value(admin.getAdminId()));
+  }
 
   @Test
   @DisplayName("모든 주문 조회")
@@ -139,5 +312,20 @@ public class AdminControllerTest {
     Order order = orderService.getOrder(orderId);
     OrderItem orderItem = order.findItemById(id).get();
     assertThat(orderItem.isOrderItemStatus()).isFalse(); // orderItemStatus false 값 검증
+  }
+
+  private ResultActions doSignup(String adminId, String password) throws Exception {
+    return mvc.perform(
+        post("/admin/signup")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(String.format("""
+                {
+                    "adminId": "%s",
+                    "inputPassword": "%s",
+                    "confirmPassword": "%s"
+                }
+                """, adminId, password, password)
+            )
+    ).andDo(print());
   }
 }
