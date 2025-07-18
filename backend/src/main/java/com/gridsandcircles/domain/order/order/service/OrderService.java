@@ -4,12 +4,14 @@ import com.gridsandcircles.domain.order.order.entity.Order;
 import com.gridsandcircles.domain.order.order.repository.OrderRepository;
 import com.gridsandcircles.domain.order.orderitem.entity.OrderItem;
 import com.gridsandcircles.domain.order.orderitem.service.OrderItemService;
+import com.gridsandcircles.global.ServiceException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Service
@@ -39,27 +41,28 @@ public class OrderService{
   }
 
   @Transactional(readOnly = true)
-  public Optional<Order> getOrder(int id) {
-    return orderRepository.findById(id);
+  public Order getOrder(int id) {
+    return orderRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("Order not found"));
   }
 
   @Transactional
   protected void validateOrderItemDeletable(Order order, OrderItem orderItem) {
     if (!order.getOrderItems().contains(orderItem)) {
-      throw new IllegalArgumentException("Order item not found");
+      throw new NoSuchElementException("Order item not found");
     }
 
-    if (!(order.isOrderStatus() && !order.isDeliveryStatus())) {
-      throw new IllegalStateException("Cannot delete item from active or incomplete order");
+    if (!(orderItem.isOrderItemStatus() && !order.isDeliveryStatus())) {//수정
+      throw new ServiceException(HttpStatus.BAD_REQUEST, "Cannot delete item from active or incomplete order");
     }
   }
 
   @Transactional
   public void deleteOrderItem(Integer orderId, Integer orderItemId) {
-    Order order = getOrder(orderId)
-            .orElseThrow(() -> new RuntimeException("Order not found"));
-    OrderItem orderItem = orderItemService.getOrderItem(orderItemId)
-            .orElseThrow(() -> new RuntimeException("Order item not found"));
+    Order order = getOrder(orderId);
+
+    OrderItem orderItem = orderItemService.getOrderItem(orderItemId);
+
 
     validateOrderItemDeletable(order, orderItem);
 

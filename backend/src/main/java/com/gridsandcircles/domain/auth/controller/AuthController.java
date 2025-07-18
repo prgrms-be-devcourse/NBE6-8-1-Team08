@@ -2,8 +2,8 @@ package com.gridsandcircles.domain.auth.controller;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import com.gridsandcircles.domain.auth.LoginResponseDto;
 import com.gridsandcircles.domain.auth.dto.LoginRequestDto;
+import com.gridsandcircles.domain.auth.dto.LoginResponseDto;
 import com.gridsandcircles.domain.auth.service.AuthService;
 import com.gridsandcircles.domain.auth.util.JwtUtil;
 import com.gridsandcircles.global.ResultResponse;
@@ -16,13 +16,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.UUID;
+import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -33,7 +30,7 @@ public class AuthController {
   private final AuthService authService;
   private final JwtUtil jwtUtil;
 
-  @PostMapping("login")
+  @PostMapping("/login")
   @Operation(summary = "로그인")
   @ApiResponse(
       responseCode = "200",
@@ -61,9 +58,17 @@ public class AuthController {
   ) {
     String adminId = authService.loginAdmin(loginRequestDto.adminId(), loginRequestDto.password());
     String accessToken = jwtUtil.generateToken(adminId);
-    String refreshToken = UUID.randomUUID().toString();
+    String refreshToken = authService.createRefreshToken(adminId);
 
     return ResponseEntity.ok().body(new ResultResponse<>("Login successful",
         new LoginResponseDto(adminId, accessToken, refreshToken)));
+  }
+
+  @DeleteMapping("/logout")
+  @Operation(summary = "로그아웃")
+  @ApiResponse(responseCode = "204", description = "로그아웃 성공")
+  public ResponseEntity<Void> logout(Principal principal) {
+    authService.deleteRefreshToken(principal.getName());
+    return ResponseEntity.noContent().build();
   }
 }
