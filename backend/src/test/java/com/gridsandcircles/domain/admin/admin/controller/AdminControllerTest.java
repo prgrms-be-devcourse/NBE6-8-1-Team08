@@ -1,5 +1,6 @@
-package com.example.gridsandcircles.domain.admin.admin.controller;
+package com.gridsandcircles.domain.admin.admin.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
@@ -27,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureMockMvc
 public class AdminControllerTest {
 
+  @Autowired
   private OrderService orderService;
 
   @Autowired
@@ -49,5 +51,42 @@ public class AdminControllerTest {
         .andExpect(handler().methodName("getOrders"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.length()").value(orders.size()));
+  }
+
+  @Test
+  @DisplayName("주문 삭제, by order")
+  @WithMockUser(username = "admin")
+  void deleteOrder() throws Exception {
+    int id = 1;
+
+    ResultActions resultActions = mvc
+            .perform(
+                    delete("/admin/orders/" + id)
+            )
+            .andDo(print());
+
+    resultActions
+            .andExpect(handler().handlerType(AdminController.class))
+            .andExpect(handler().methodName("deleteOrder"))
+            .andExpect(status().isOk());
+  }
+
+  @Test
+  @DisplayName("주문 삭제, by product")
+  @WithMockUser(username = "admin")
+  void deleteOrderDetail() throws Exception {
+    int orderId = 1;
+    int id = 1;
+
+    ResultActions resultActions = mvc
+            .perform(
+                    delete("/admin/orders/%d/%d".formatted(orderId, id))
+            )
+            .andDo(print());
+
+    resultActions
+            .andExpect(handler().handlerType(AdminController.class))
+            .andExpect(handler().methodName("deleteOrderDetail"))
+            .andExpect(status().isOk());
   }
 }
