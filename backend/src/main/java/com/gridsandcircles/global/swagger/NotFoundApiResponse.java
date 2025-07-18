@@ -22,7 +22,7 @@ import java.lang.annotation.Target;
         schema = @Schema(implementation = ResultResponse.class),
         examples = @ExampleObject(value = """
             {
-              "msg": "Admin not found",
+              "msg": "Resource not found",
               "data": null
             }
             """

@@ -1,15 +1,15 @@
 package com.gridsandcircles.domain.auth.util;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+
+import com.gridsandcircles.global.ServiceException;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
 import java.security.Key;
 import java.util.Date;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 @Component
 public class JwtUtil {
@@ -37,5 +37,16 @@ public class JwtUtil {
 
   public Claims getClaims(String token) {
     return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+  }
+
+  public String getAdminIdFromExpiredToken(String token) {
+    try {
+      getClaims(token);
+      throw new IllegalArgumentException("Access token not expired");
+    } catch (ExpiredJwtException e) {
+      return e.getClaims().getSubject();
+    } catch (JwtException | IllegalArgumentException e) {
+      throw new ServiceException(UNAUTHORIZED, "Access token invalid");
+    }
   }
 }
