@@ -5,13 +5,20 @@
 
 
 ```bash
-//순서대로 실행
 
+# git clone
 git clone https://github.com/prgrms-be-devcourse/NBE6-8-1-Team08.git
+
 cd NBE6-8-1-Team08
 git checkout origin/fe/feature/customer_main
+
+# 설치
 cd frontend
 npm install
+npm install react-router-dom
+npm install -D tailwindcss postcss autoprefixer
+npm install -D @tailwindcss/postcss
+
 npm run dev
 ```
 
