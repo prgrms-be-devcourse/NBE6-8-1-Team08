@@ -1,11 +1,11 @@
 // UserMain.tsx
 
-import MainBackboard from '../../components/MainBackboard';
+import MainBackboard from '../../components/User/MainBackboard';
 
 export default function UserMain() {
   const buttons = [
     { text: '주문하기', url: '/user/menu' },
-    { text: '내 주문 조회하기', url: '/admin' }
+    { text: '내 주문 조회하기', url: '/user/searchorder' }
   ];
 
   return (
