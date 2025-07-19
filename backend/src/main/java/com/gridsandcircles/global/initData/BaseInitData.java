@@ -27,7 +27,7 @@ public class BaseInitData {
       Product product1 = productService.createProduct(Product.builder()
               .name("Columbia Coffee")
               .price(3000)
-              .description("맛좋은 커피")
+              .description("외국산 커피")
               .productImage("image.jpg1")
               .build());
 
