@@ -1,8 +1,7 @@
-import React from "react";
-import AdminLoginForm from "../../components/AdminLoginForm";
-import AdminLogo from "../../components/AdminLogo";
+import AdminLoginForm from "../../components/Admin/AdminLoginForm";
+import AdminLogo from "../../components/Admin/AdminLogo";
 
-export default function AdminPage() {
+export default function AdminLoginPage() {
   return (
     <div
       style={{
@@ -25,7 +24,11 @@ export default function AdminPage() {
           position: "relative",
         }}
       >
-        <AdminLogo />
+        <AdminLogo
+          bottomMessage="Not a member yet?"
+          linkText="Register now"
+          linkTo="/admin/register"
+        />
         <AdminLoginForm />
       </div>
     </div>
