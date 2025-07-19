@@ -63,7 +63,7 @@ public class OrderController {
                 "deliveryStatus": false,
                 "orderItems": [
                   {
-                    "orderItemId": 20
+                    "orderItemId": 20,
                     "productId": 1,
                     "productName": "아메리카노",
                     "orderCount": 2,
