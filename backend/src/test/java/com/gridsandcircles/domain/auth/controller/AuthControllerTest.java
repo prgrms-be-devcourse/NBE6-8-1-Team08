@@ -1,13 +1,16 @@
 package com.gridsandcircles.domain.auth.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasLength;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gridsandcircles.domain.admin.admin.service.AdminService;
 import com.gridsandcircles.global.ServiceException;
 import java.util.NoSuchElementException;
@@ -133,6 +136,34 @@ public class AuthControllerTest {
         .andExpect(jsonPath("$.data.adminId").value("test"))
         .andExpect(jsonPath("$.data.accessToken").value(Matchers.notNullValue()))
         .andExpect(jsonPath("$.data.refreshToken", hasLength(36)));
+  }
+
+  @Test
+  @DisplayName("로그아웃: 204 No Content 성공")
+  void logout_1() throws Exception {
+    adminService.createAdmin("test", "secret number");
+
+    String loginResponse = doLogin("test", "secret number")
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    String accessToken = new ObjectMapper()
+        .readTree(loginResponse)
+        .path("data")
+        .path("accessToken")
+        .asText();
+
+    ResultActions resultActions = mvc.perform(
+        delete("/auth/logout")
+            .header("Authorization", "Bearer " + accessToken)
+    ).andDo(print());
+
+    resultActions
+        .andExpect(handler().handlerType(AuthController.class))
+        .andExpect(handler().methodName("logout"))
+        .andExpect(status().isNoContent())
+        .andExpect(result -> assertThat(result.getResponse().getContentAsString()).isEmpty());
   }
 
   private ResultActions doLogin(String adminId, String password) throws Exception {
