@@ -296,7 +296,14 @@ public class AdminControllerTest {
                     .content("""
                             {
                              "email" : "order1@example.com",
-                             "productId" : 1
+                             "products" : [
+                                 {
+                                     "productId" : 1
+                                 },
+                                 {
+                                     "productId" : 2
+                                 }
+                             ]
                             }
                             """)
         )

@@ -1,5 +1,7 @@
 package com.gridsandcircles.domain.order.order.controller;
 
+import com.gridsandcircles.domain.order.order.dto.OrderCancelRequestDto;
+import com.gridsandcircles.domain.order.order.dto.OrderCancelResponseDto;
 import com.gridsandcircles.domain.order.order.dto.OrderRequestDto;
 import com.gridsandcircles.domain.order.order.dto.OrderResponseDto;
 import com.gridsandcircles.domain.order.order.entity.Order;
@@ -17,11 +19,11 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequiredArgsConstructor
 @RestController
@@ -177,33 +179,35 @@ public class OrderController {
         return ResponseEntity.ok(new ResultResponse<>("Get orders by email successful", orders));
     }
 
-    @DeleteMapping("/{id}")
-    @Transactional
-    public ResponseEntity<ResultResponse<Void>> delete(@PathVariable int id) {
-
-        Order order = orderService.getOrder(id);
-
-        orderService.deleteOrder(order);
-
-        ResultResponse<Void> response = new ResultResponse<>(
-                "Order #%d has been deleted".formatted(id)
-        );
-
-        return ResponseEntity.ok(response);
-    }
-
-    @DeleteMapping("/{orderId}/items/{orderItemId}")
-    public ResponseEntity<ResultResponse<Map<String, Integer>>> removeOrderItem(
-            @PathVariable int orderId,
-            @PathVariable int orderItemId
+    @PatchMapping("/cancel-detail")
+    @Operation(summary = "상품 취소")
+    @ApiResponse(
+            responseCode = "200",
+            description = "product 단위로 주문 취소 성공",
+            content = @Content(
+                    mediaType = APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ResultResponse.class),
+                    examples = @ExampleObject(value = """
+              {
+                "msg": "Cancel orderItem successful",
+                "email" : "test"
+              }
+              """
+                    )
+            )
+    )
+    public ResponseEntity<ResultResponse<OrderCancelResponseDto>> cancelOrderDetail(
+            @RequestBody OrderCancelRequestDto orderCancelRequestDto
     ) {
-        orderService.deleteOrderItem(orderId, orderItemId);
+        List<Integer> productIds = orderCancelRequestDto.products().stream()
+                .map(OrderCancelRequestDto.ProductRequestDto::productId)
+                .toList();
 
-        return ResponseEntity.ok().body(
-                new ResultResponse<>(
-                        "Delete orderItem successful",
-                        Map.of("orderId", orderId,"orderItemId", orderItemId)
-                )
-        );
+        List<Order> orders = orderService.cancelOrderItemsByEmailAndProductIds(orderCancelRequestDto.email(), productIds);
+
+        OrderCancelResponseDto responseDto = OrderMapper.toCancelResponseDto(orders.get(0));
+
+        return ResponseEntity.ok()
+                .body(new ResultResponse<>("Cancel product successful", responseDto));
     }
 }

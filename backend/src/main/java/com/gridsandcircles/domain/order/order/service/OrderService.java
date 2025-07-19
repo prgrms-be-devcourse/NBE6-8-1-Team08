@@ -118,16 +118,16 @@ public class OrderService{
   }
 
   @Transactional
-  public List<Order> cancelOrderByEmailAndProductId(String email, Long productId) {
+  public List<Order> cancelOrderItemsByEmailAndProductIds(String email, List<Integer> productIds) {
     List<Order> orders = orderRepository.findByEmail(email);
     if (orders.isEmpty()) {
-      throw new NoSuchElementException("Order not found for email: " + email);
+      throw new NoSuchElementException("No orders found for email: " + email);
     }
 
     boolean itemCancelled = false;
     for (Order order : orders) {
       for (OrderItem orderItem : order.getOrderItems()) {
-        if (orderItem.getProduct().getProductId().equals(productId.intValue())) {
+        if (productIds.contains(orderItem.getProduct().getProductId())) {
           orderItem.cancel();
           itemCancelled = true;
         }
@@ -135,7 +135,7 @@ public class OrderService{
     }
 
     if (!itemCancelled) {
-      throw new NoSuchElementException("Product not found in any order for the given email.");
+      throw new NoSuchElementException("No product found for order");
     }
     return orders;
   }
