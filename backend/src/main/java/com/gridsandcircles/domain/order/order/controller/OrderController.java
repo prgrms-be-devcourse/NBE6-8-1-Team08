@@ -7,6 +7,8 @@ import com.gridsandcircles.domain.order.order.mapper.OrderMapper;
 import com.gridsandcircles.domain.order.order.service.OrderService;
 import com.gridsandcircles.global.ResultResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,14 +38,14 @@ public class OrderController {
     @PostMapping("/{num}")
     public ResponseEntity<ResultResponse<OrderResponseDto>> createOrder(
             @PathVariable int num,
-            @RequestBody OrderRequestDto requestDto
+            @Valid @RequestBody OrderRequestDto requestDto
     ) {
         OrderResponseDto responseDto = orderService.createOrder(requestDto);
         return ResponseEntity.ok(new ResultResponse<>("Order created successfully", responseDto));
     }
 
     @GetMapping(params = "email")
-    public ResponseEntity<ResultResponse<List<OrderResponseDto>>> getOrdersByEmail(@RequestParam String email) {
+    public ResponseEntity<ResultResponse<List<OrderResponseDto>>> getOrdersByEmail(@NotBlank(message = "이메일은 필수입니다.") @RequestParam String email) {
         List<OrderResponseDto> orders = orderService.getOrdersByEmail(email)
                 .stream()
                 .map(OrderMapper::toResponseDto)

@@ -61,7 +61,13 @@ public class OrderService{
 
   @Transactional(readOnly = true)
   public java.util.List<Order> getOrdersByEmail(String email) {
-    return orderRepository.findByEmail(email);
+    List<Order> orders = orderRepository.findByEmail(email);
+
+    if (orders.isEmpty()) {
+      throw new ServiceException(HttpStatus.NOT_FOUND, "해당 이메일로 주문 내역을 찾을 수 없습니다.");
+    }
+
+    return orders;
   }
 
   @Transactional
