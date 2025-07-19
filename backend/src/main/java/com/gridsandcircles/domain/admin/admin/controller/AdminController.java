@@ -1,18 +1,14 @@
 package com.gridsandcircles.domain.admin.admin.controller;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-
 import com.gridsandcircles.domain.admin.admin.dto.AdminSignupRequestDto;
 import com.gridsandcircles.domain.admin.admin.dto.AdminSignupResponseDto;
 import com.gridsandcircles.domain.admin.admin.mapper.AdminMapper;
 import com.gridsandcircles.domain.admin.admin.service.AdminService;
 import com.gridsandcircles.domain.order.order.dto.OrderCancelRequestDto;
 import com.gridsandcircles.domain.order.order.dto.OrderCancelResponseDto;
+import com.gridsandcircles.domain.order.order.dto.OrderResponseDto;
 import com.gridsandcircles.domain.order.order.entity.Order;
 import com.gridsandcircles.domain.order.order.mapper.OrderMapper;
-import com.gridsandcircles.domain.order.order.dto.OrderResponseDto;
 import com.gridsandcircles.domain.order.order.service.OrderService;
 import com.gridsandcircles.global.ResultResponse;
 import com.gridsandcircles.global.ServiceException;
@@ -25,10 +21,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequiredArgsConstructor
 @RestController
@@ -142,11 +143,12 @@ public class AdminController {
   public ResponseEntity<ResultResponse<OrderCancelResponseDto>> cancelOrderDetail(
       @RequestBody OrderCancelRequestDto orderCancelRequestDto
   ) {
-    List<Integer> productIds = orderCancelRequestDto.products().stream()
-            .map(OrderCancelRequestDto.ProductRequestDto::productId)
+    List<String> productNames = orderCancelRequestDto.products().stream()
+            .map(OrderCancelRequestDto.ProductRequestDto::productName)
             .toList();
 
-    List<Order> orders = orderService.cancelOrderItemsByEmailAndProductIds(orderCancelRequestDto.email(), productIds);
+    List<Order> orders = orderService.cancelOrderItemsByEmailAndProductNames(
+            orderCancelRequestDto.email(), productNames);
 
     OrderCancelResponseDto responseDto = OrderMapper.toCancelResponseDto(orders.get(0));
 
