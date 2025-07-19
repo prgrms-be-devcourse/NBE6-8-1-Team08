@@ -46,7 +46,6 @@ public class AdminControllerTest {
   @Autowired
   private MockMvc mvc;
 
-
   @Test
   @DisplayName("회원가입: 관리자 ID 길이 4 미만 시 400 Bad Request 발생")
   void signUp_1() throws Exception {

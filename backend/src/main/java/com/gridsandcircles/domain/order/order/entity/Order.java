@@ -3,9 +3,10 @@ package com.gridsandcircles.domain.order.order.entity;
 import com.gridsandcircles.domain.order.orderitem.entity.OrderItem;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +20,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Builder
 @Entity
 @Table(name = "orders")
+@EntityListeners(AuditingEntityListener.class)
 public class Order {
 
     @Id
@@ -29,8 +31,8 @@ public class Order {
 
     private String address;
 
-    @CreationTimestamp
-    private Timestamp createdAt;
+    @CreatedDate
+    private LocalDateTime createdAt;
 
     private boolean orderStatus;
 

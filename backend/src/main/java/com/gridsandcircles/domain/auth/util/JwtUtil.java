@@ -27,12 +27,16 @@ public class JwtUtil {
     this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
   }
 
-  public String generateToken(String username) {
+  public String generateToken(String username, Date expiration) {
     return Jwts.builder()
         .setSubject(username)
-        .setExpiration(new Date(System.currentTimeMillis() + tokenExpireTime))
+        .setExpiration(expiration)
         .signWith(key, SignatureAlgorithm.HS256)
         .compact();
+  }
+
+  public String generateToken(String username) {
+    return generateToken(username, new Date(System.currentTimeMillis() + tokenExpireTime));
   }
 
   public Claims getClaims(String token) {
