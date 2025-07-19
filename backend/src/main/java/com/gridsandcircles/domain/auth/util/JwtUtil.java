@@ -8,15 +8,18 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import java.security.Key;
 import java.util.Date;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class JwtUtil {
 
+  @Getter
   @Value("${JWT_SECRET}")
   private String jwtSecret;
 
+  @Getter
   @Value("${TOKEN_EXPIRE_TIME}")
   private long tokenExpireTime;
 
@@ -49,7 +52,7 @@ public class JwtUtil {
       throw new IllegalArgumentException("Access token not expired");
     } catch (ExpiredJwtException e) {
       return e.getClaims().getSubject();
-    } catch (JwtException | IllegalArgumentException e) {
+    } catch (JwtException e) {
       throw new ServiceException(UNAUTHORIZED, "Access token invalid");
     }
   }
