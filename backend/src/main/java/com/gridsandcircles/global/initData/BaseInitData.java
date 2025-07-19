@@ -25,16 +25,16 @@ public class BaseInitData {
 
     if (orderService.countOrders() == 0) {
       Product product1 = productService.createProduct(Product.builder()
-              .name("아메리카노")
+              .name("Columbia Coffee")
               .price(3000)
-              .description("진한 커피")
+              .description("맛좋은 커피")
               .productImage("image.jpg1")
               .build());
 
       Product product2 = productService.createProduct(Product.builder()
-              .name("초코라떼")
+              .name("Espresso")
               .price(5000)
-              .description("진한 라떼")
+              .description("진한 커피")
               .productImage("image.jpg2")
               .build());
 
