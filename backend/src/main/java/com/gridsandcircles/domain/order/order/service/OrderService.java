@@ -38,6 +38,8 @@ public class OrderService{
 
   @Transactional
   public OrderResponseDto createOrder(OrderRequestDto dto) {
+    validateOrderRequest(dto);
+
     Order order = Order.builder()
             .email(dto.email())
             .address(dto.address())
@@ -59,8 +61,28 @@ public class OrderService{
     return OrderMapper.toResponseDto(order);
   }
 
+  private void validateOrderRequest(OrderRequestDto dto) {
+    if (dto.email() == null || dto.email().trim().isEmpty()) {
+      throw new ServiceException(HttpStatus.BAD_REQUEST, "이메일은 필수입니다.");
+    }
+
+    if (dto.address() == null || dto.address().trim().isEmpty()) {
+      throw new ServiceException(HttpStatus.BAD_REQUEST, "주소는 필수입니다.");
+    }
+
+    for (OrderRequestDto.OrderItemRequestDto itemDto : dto.orderItems()) {
+      if (itemDto.count() <= 0) {
+        throw new ServiceException(HttpStatus.BAD_REQUEST, "주문 수량은 1개 이상이어야 합니다.");
+      }
+    }
+  }
+
   @Transactional(readOnly = true)
   public java.util.List<Order> getOrdersByEmail(String email) {
+    if (email == null || email.trim().isEmpty()) {
+      throw new ServiceException(HttpStatus.BAD_REQUEST, "이메일은 필수입니다.");
+    }
+
     return orderRepository.findByEmail(email);
   }
 
