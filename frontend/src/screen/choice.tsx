@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import HButton from '../components/HoverButton';
+import HButton from '../components/User/HoverButton';
 
 export default function Choice() {
   const navigate = useNavigate();
