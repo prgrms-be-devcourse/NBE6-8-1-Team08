@@ -6,6 +6,12 @@ import com.gridsandcircles.domain.order.order.entity.Order;
 import com.gridsandcircles.domain.order.order.mapper.OrderMapper;
 import com.gridsandcircles.domain.order.order.service.OrderService;
 import com.gridsandcircles.global.ResultResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -35,16 +41,134 @@ public class OrderController {
         return ResponseEntity.ok().body(new ResultResponse<>("Get order successful", items));
     }
 
-    @PostMapping("/{num}")
+    @PostMapping("/user/order")
+    @Operation(
+            summary = "고객 주문 등록"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "주문 등록 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(value = """
+            {
+              "msg": "Order created successfully",
+              "data": {
+                "orderId": 10,
+                "email": "user@example.com",
+                "address": "서울시 강남구 테헤란로 123",
+                "createdAt": "2024-07-19T17:01:12",
+                "orderStatus": true,
+                "deliveryStatus": false,
+                "orderItems": [
+                  {
+                    "orderItemId": 20,
+                    "productId": 1,
+                    "productName": "아메리카노",
+                    "orderCount": 2,
+                    "orderItemStatus": true
+                  },
+                  {
+                    "orderItemId": 21,
+                    "productId": 3,
+                    "productName": "카페라떼",
+                    "orderCount": 1,
+                    "orderItemStatus": true
+                  }
+                ]
+              }
+            }
+            """)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "입력값 오류",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = {
+                                    @ExampleObject(name = "이메일 누락", value = "{\"msg\": \"이메일은 필수입니다.\"}"),
+                                    @ExampleObject(name = "주소 누락", value = "{\"msg\": \"주소는 필수입니다.\"}"),
+                                    @ExampleObject(name = "주문수량 0 이하", value = "{\"msg\": \"주문 수량은 1개 이상이어야 합니다.\"}")
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "상품 ID가 존재하지 않음",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\"msg\": \"상품을 찾을 수 없습니다.\"}")
+                    )
+            )
+    })
     public ResponseEntity<ResultResponse<OrderResponseDto>> createOrder(
-            @PathVariable int num,
             @Valid @RequestBody OrderRequestDto requestDto
     ) {
         OrderResponseDto responseDto = orderService.createOrder(requestDto);
         return ResponseEntity.ok(new ResultResponse<>("Order created successfully", responseDto));
     }
 
-    @GetMapping(params = "email")
+    @GetMapping("/user/findorder")
+    @Operation(
+            summary = "고객 주문 조회"
+    )
+    @Parameter(
+            name = "email",
+            description = "고객 이메일",
+            required = true,
+            example = "user@example.com"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "주문 조회 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(value = """
+            {
+              "msg": "Get orders by email successful",
+              "data": [
+                {
+                  "orderId": 10,
+                  "email": "user@example.com",
+                  "address": "서울시 강남구 테헤란로 123",
+                  "createdAt": "2024-07-19T17:01:12",
+                  "orderStatus": true,
+                  "deliveryStatus": false,
+                  "orderItems": [
+                    {
+                      "orderItemId": 20,
+                      "productId": 1,
+                      "productName": "아메리카노",
+                      "orderCount": 2,
+                      "orderItemStatus": true
+                    }
+                  ]
+                }
+              ]
+            }
+            """)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "입력값 오류",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\"msg\": \"이메일은 필수입니다.\"}")
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "주문 내역에 해당 이메일이 없음",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(value = "{\"msg\": \"해당 이메일로 주문 내역을 찾을 수 없습니다.\"}")
+                    )
+            )
+    })
     public ResponseEntity<ResultResponse<List<OrderResponseDto>>> getOrdersByEmail(@NotBlank(message = "이메일은 필수입니다.") @RequestParam String email) {
         List<OrderResponseDto> orders = orderService.getOrdersByEmail(email)
                 .stream()
