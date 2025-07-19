@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // 추가
-import OrderList from '../../components/OrderList';
-import Summary from '../../components/Summary';
+import OrderList from '../../components/User/OrderList';
+import Summary from '../../components/User/Summary';
 
 export default function ProductInfo() {
   const navigate = useNavigate(); // 추가
 
   const products = [
-    { korName: '커피콩', engName: 'Columbia Bean', price: '50000', imgUrl: 'https://via.placeholder.com/80' },
-    { korName: '커피콩', engName: 'Ethiopia Yirgacheffe', price: '45000', imgUrl: 'https://via.placeholder.com/80' },
-    { korName: '커피콩', engName: 'Guatemala Antigua', price: '52000', imgUrl: 'https://via.placeholder.com/80' },
+    { korName: '커피콩', engName: 'Ethiopia Yirgacheffe', price: '4500', imgUrl: '/resources/1.png' },
+    { korName: '커피콩', engName: 'Columbia Bean', price: '50000', imgUrl: '/resources/2.png' },
+    { korName: '커피콩', engName: 'Guatemala Antigua', price: '5200', imgUrl: '/resources/3.png' },
+    { korName: '커피콩', engName: 'Serra do Caparaó', price: '53000', imgUrl: '/resources/4.png' },
   ];
 
   const [cart, setCart] = useState({});
@@ -37,7 +38,7 @@ export default function ProductInfo() {
     <div style={{ minHeight: '100vh', minWidth: '1500px', backgroundColor: '#DCDCDC', display: 'flex', flexDirection: 'column', padding: '2rem' }}>
       <div
         style={{ height: '15vh', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '2rem', cursor: 'pointer' }}
-        onClick={() => navigate('/')} // 클릭 시 홈으로 이동
+        onClick={() => navigate('/')} 
       >
         <div style={{ fontSize: '3rem', fontWeight: 'bold', color: '#484848' }}>
           Grids & Circle
