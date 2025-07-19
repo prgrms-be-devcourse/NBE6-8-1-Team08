@@ -12,7 +12,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gridsandcircles.domain.admin.admin.service.AdminService;
+import com.gridsandcircles.domain.auth.util.JwtUtil;
 import com.gridsandcircles.global.ServiceException;
+import java.util.Date;
 import java.util.NoSuchElementException;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
@@ -38,6 +40,9 @@ public class AuthControllerTest {
 
   @Autowired
   private MockMvc mvc;
+
+  @Autowired
+  private JwtUtil jwtUtil;
 
   @Test
   @DisplayName("로그인: 관리자 ID 길이 4 미만 시 400 Bad Request 발생")
@@ -164,6 +169,99 @@ public class AuthControllerTest {
         .andExpect(handler().methodName("logout"))
         .andExpect(status().isNoContent())
         .andExpect(result -> assertThat(result.getResponse().getContentAsString()).isEmpty());
+  }
+
+  @Test
+  @DisplayName("토큰 재발급: 재발급 대상자인 관리자가 DB에 없을 시 404 Not Found 발생")
+  void refresh_1() throws Exception {
+    ResultActions resultActions = mvc.perform(
+        post("/auth/refresh")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(String.format("""
+                    {
+                        "expiredAccessToken": "%s",
+                        "originalRefreshToken": "%s"
+                    }
+                    """, jwtUtil.generateToken("tester", new Date(System.currentTimeMillis())),
+                "fake refreshToken"))
+    ).andDo(print());
+
+    resultActions
+        .andExpect(handler().handlerType(AuthController.class))
+        .andExpect(handler().methodName("refresh"))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.msg").value(
+            Matchers.containsString("Refresh token not found for administrator")))
+        .andExpect(jsonPath("$.data").value(Matchers.nullValue()))
+        .andExpect(result -> assertInstanceOf(NoSuchElementException.class,
+            result.getResolvedException()));
+  }
+
+  @Test
+  @DisplayName("토큰 재발급: 전송받은 Refresh Token이 실제 관리자의 Refresh Token과 불일치 시 401 Unauthorized 발생")
+  void refresh_2() throws Exception {
+    adminService.createAdmin("test", "secret number");
+
+    doLogin("test", "secret number")
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    ResultActions resultActions = mvc.perform(
+        post("/auth/refresh")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(String.format("""
+                    {
+                        "expiredAccessToken": "%s",
+                        "originalRefreshToken": "%s"
+                    }
+                    """, jwtUtil.generateToken("test", new Date(System.currentTimeMillis())),
+                "fake refreshToken"))
+    ).andDo(print());
+
+    resultActions
+        .andExpect(handler().handlerType(AuthController.class))
+        .andExpect(handler().methodName("refresh"))
+        .andExpect(status().isUnauthorized())
+        .andExpect(jsonPath("$.msg").value(Matchers.containsString("Refresh token does not match")))
+        .andExpect(jsonPath("$.data").value(Matchers.nullValue()))
+        .andExpect(
+            result -> assertInstanceOf(ServiceException.class, result.getResolvedException()));
+  }
+
+  @Test
+  @DisplayName("토큰 재발급: 200 Ok 성공")
+  void refresh_3() throws Exception {
+    adminService.createAdmin("test", "secret number");
+
+    String loginResponse = doLogin("test", "secret number")
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    String refreshToken = new ObjectMapper().readTree(loginResponse).get("data")
+        .path("refreshToken").asText();
+
+    ResultActions resultActions = mvc.perform(
+        post("/auth/refresh")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(String.format("""
+                    {
+                        "expiredAccessToken": "%s",
+                        "originalRefreshToken": "%s"
+                    }
+                    """, jwtUtil.generateToken("test", new Date(System.currentTimeMillis())),
+                refreshToken))
+    ).andDo(print());
+
+    resultActions
+        .andExpect(handler().handlerType(AuthController.class))
+        .andExpect(handler().methodName("refresh"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.msg").value(Matchers.containsString("Refreshing tokens successful")))
+        .andExpect(jsonPath("$.data.accessToken").value(Matchers.notNullValue()))
+        .andExpect(jsonPath("$.data.refreshToken", hasLength(36)))
+        .andExpect(jsonPath("$.data.refreshToken").value(Matchers.not(refreshToken)));
   }
 
   private ResultActions doLogin(String adminId, String password) throws Exception {
