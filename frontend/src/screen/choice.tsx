@@ -1,7 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import HButton from '../components/HoverButton';
-import React from 'react';
-
 
 export default function Choice() {
   const navigate = useNavigate();
@@ -18,7 +16,7 @@ export default function Choice() {
         </div>
 
         <div className="absolute left-1/2 -translate-x-1/2 top-[60%] w-[30%] h-[10%]">
-          <HButton text="관리자 페이지" onClick={() => navigate('/admin')} />
+          <HButton text="관리자 페이지" onClick={() => navigate('/admin/login')} />
         </div>
       </div>
     </div>
