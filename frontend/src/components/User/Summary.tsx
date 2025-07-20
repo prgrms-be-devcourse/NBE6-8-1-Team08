@@ -44,11 +44,11 @@ export default function Summary({ cart, products, onDecrease }) {
   
     const fullAddress = `${address} ${zipcode}`.trim();
   
-    // productId는 products 배열 index + 1, count는 장바구니 갯수로 매핑
+   
     const orderItems = Object.entries(cart).map(([engName, count]) => {
-      const productIndex = products.findIndex((p) => p.engName === engName);
+      const product = products.find((p) => p.engName === engName);
       return {
-        productId: productIndex + 1,  // 1부터 시작
+        productId: product?.PRODUCT_ID, 
         count,
       };
     });
@@ -71,12 +71,13 @@ export default function Summary({ cart, products, onDecrease }) {
       if (!response.ok) throw new Error('주문 실패');
   
       alert('결제가 완료되었습니다.');
-      window.location.href = 'http://localhost:5137/';
+      window.location.href = 'http://localhost:5173';
     } catch (error) {
       alert('결제 요청 중 오류가 발생했습니다.');
       console.error(error);
     }
   };
+  
   
   
   const renderLabel = (text, error) => (

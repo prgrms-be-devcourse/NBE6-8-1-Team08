@@ -16,16 +16,35 @@ export default function UserSearchOrder() {
     setIsValidEmail(validateEmail(value) || value.trim() === "");
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!email.trim()) {
       alert("이메일을 입력해주세요.");
       return;
     }
+
     if (!validateEmail(email)) {
       setIsValidEmail(false);
       return;
     }
-    navigate(`/user/orderlist?username=${encodeURIComponent(email.trim())}`);
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/orders/user/findorder?email=${encodeURIComponent(email.trim())}`
+        // 만약 백엔드가 `arg0`을 요구한다면 아래로 변경:
+        // `http://localhost:8080/orders/user/findorder?arg0=${encodeURIComponent(email.trim())}`
+      );
+
+      if (!response.ok) {
+        throw new Error("조회 실패");
+      }
+
+      const data = await response.json(); // 필요 시 응답 데이터 활용
+
+      navigate(`/user/orderlist?username=${encodeURIComponent(email.trim())}`);
+    } catch (error) {
+      alert("해당 이메일로 주문을 찾을 수 없습니다.");
+      console.error(error);
+    }
   };
 
   return (
@@ -51,7 +70,14 @@ export default function UserSearchOrder() {
           className="absolute left-1/2 -translate-x-1/2 w-[60%] min-w-[300px]"
           style={{ top: "45%" }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              marginBottom: "0.5rem",
+            }}
+          >
             <label
               htmlFor="email-input"
               style={{
@@ -64,7 +90,13 @@ export default function UserSearchOrder() {
               자신의 email을 입력해 주세요
             </label>
             {!isValidEmail && (
-              <span style={{ color: "red", fontWeight: "normal", fontSize: "0.9rem" }}>
+              <span
+                style={{
+                  color: "red",
+                  fontWeight: "normal",
+                  fontSize: "0.9rem",
+                }}
+              >
                 email 형식 지켜주세요
               </span>
             )}
@@ -111,8 +143,12 @@ export default function UserSearchOrder() {
               lineHeight: 1,
             }}
             aria-label="조회하기"
-            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#222222")}
-            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#000000")}
+            onMouseOver={(e) =>
+              (e.currentTarget.style.backgroundColor = "#222222")
+            }
+            onMouseOut={(e) =>
+              (e.currentTarget.style.backgroundColor = "#000000")
+            }
           >
             &rarr;
           </button>
