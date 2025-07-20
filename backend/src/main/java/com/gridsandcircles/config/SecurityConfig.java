@@ -22,7 +22,8 @@ public class SecurityConfig {
         .formLogin(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/h2-console/**", "/",
-                "/admin/signup", "/auth/login", "/auth/refresh", "/orders/**").permitAll()
+                "/admin/signup", "/auth/login", "/auth/refresh", "/orders/**", "product/**")
+            .permitAll()
             .anyRequest().authenticated()
         )
         .headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin))
