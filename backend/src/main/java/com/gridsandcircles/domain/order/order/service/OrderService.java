@@ -111,8 +111,26 @@ public class OrderService{
     if (orders.isEmpty()) {
       throw new NoSuchElementException("No orders found for email: " + email);
     }
+
+    boolean allCancelled = true;
     for (Order order : orders) {
-      order.cancel();
+        if (order.isOrderStatus()) {
+            allCancelled = false;
+            break;
+        }
+    }
+
+    if (allCancelled) {
+        throw new ServiceException(HttpStatus.BAD_REQUEST, "이미 취소된 주문입니다.");
+    }
+
+    for (Order order : orders) {
+      if (order.isOrderStatus()) {
+        order.cancel();
+        for (OrderItem orderItem : order.getOrderItems()){
+          orderItem.cancel();
+        }
+      }
     }
     return orders;
   }
@@ -124,18 +142,33 @@ public class OrderService{
       throw new NoSuchElementException("No orders found for email: " + email);
     }
 
-    boolean itemCancelled = false;
+    boolean productFound = false;
+    boolean activeItemFound = false;
     for (Order order : orders) {
       for (OrderItem orderItem : order.getOrderItems()) {
         if (productNames.contains(orderItem.getProduct().getName())) {
-          orderItem.cancel();
-          itemCancelled = true;
+          productFound = true;
+          if (orderItem.isOrderItemStatus()) {
+            activeItemFound = true;
+          }
         }
       }
     }
 
-    if (!itemCancelled) {
+    if (!productFound) {
       throw new NoSuchElementException("No product found for order");
+    }
+
+    if (!activeItemFound) {
+      throw new ServiceException(HttpStatus.BAD_REQUEST, "이미 취소된 상품입니다.");
+    }
+
+    for (Order order : orders) {
+      for (OrderItem orderItem : order.getOrderItems()) {
+        if (productNames.contains(orderItem.getProduct().getName()) && orderItem.isOrderItemStatus()) {
+          orderItem.cancel();
+        }
+      }
     }
     return orders;
   }
