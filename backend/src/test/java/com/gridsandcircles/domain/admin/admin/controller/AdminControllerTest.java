@@ -298,10 +298,10 @@ public class AdminControllerTest {
                              "email" : "order1@example.com",
                              "products" : [
                                  {
-                                     "productId" : 1
+                                     "productName" : "Columbia Bean"
                                  },
                                  {
-                                     "productId" : 2
+                                     "productName" : "Ethiopia Yirgacheffe"
                                  }
                              ]
                             }
