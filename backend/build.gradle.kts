@@ -58,3 +58,8 @@ dependencies {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+//고객 주문조회 파라미터 매핑
+tasks.withType<JavaCompile> {
+    options.compilerArgs.add("-parameters")
+}
+

@@ -171,12 +171,12 @@ public class OrderController {
       )
   })
   public ResponseEntity<ResultResponse<List<OrderResponseDto>>> getOrdersByEmail(
-      @NotBlank(message = "이메일은 필수입니다.") @RequestParam String email) {
-    List<OrderResponseDto> orders = orderService.getOrdersByEmail(email)
-        .stream()
-        .map(OrderMapper::toResponseDto)
-        .toList();
-    return ResponseEntity.ok(new ResultResponse<>("Get orders by email successful", orders));
+    @NotBlank(message = "이메일은 필수입니다.") @RequestParam("email") String email) {
+        List<OrderResponseDto> orders = orderService.getOrdersByEmail(email)
+            .stream()
+            .map(OrderMapper::toResponseDto)
+            .toList();
+        return ResponseEntity.ok(new ResultResponse<>("Get orders by email successful", orders));
   }
 
   @PatchMapping("/cancel-detail")

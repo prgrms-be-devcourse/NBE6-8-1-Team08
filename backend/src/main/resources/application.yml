@@ -1,7 +1,11 @@
 spring:
   application:
     name: gridsandcircles
-
+  # 자동입력 비활성화
+  sql:
+    init:
+      mode: never
+  
   # DATABASE
   h2:
     console:
@@ -25,3 +29,5 @@ spring:
   # ENV
   config:
     import: optional:file:.env[.properties]
+
+
