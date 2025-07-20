@@ -1,5 +1,4 @@
 import { useState } from "react";
-import axios from "axios";
 
 interface Product {
   id: number;
@@ -10,97 +9,172 @@ interface Product {
 }
 
 interface OrderDetailPopupProps {
-  onClose: () => void;
   orderId: number;
-  products: Product[];
   email: string;
+  onClose: () => void;
+  products: Product[];
 }
 
 export default function OrderDetailPopup({
-  onClose,
   orderId,
-  products,
   email,
+  onClose,
+  products,
 }: OrderDetailPopupProps) {
-  const [checkedItems, setCheckedItems] = useState<number[]>([]);
+  const [checkedIds, setCheckedIds] = useState<number[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const toggleCheckbox = (id: number) => {
-    setCheckedItems((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+  const toggleCheck = (id: number) => {
+    setCheckedIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
     );
   };
 
   const handleCancel = async () => {
-    const selectedProducts = products
-      .filter((product) => checkedItems.includes(product.id))
-      .map((product) => ({ productName: product.name }));
-
-    if (selectedProducts.length === 0) {
-      return alert("취소할 상품을 선택하세요.");
+    if (checkedIds.length === 0) {
+      alert("취소할 상품을 선택해주세요.");
+      return;
     }
 
+    const selectedProducts = products.filter((p) => checkedIds.includes(p.id));
+
+    const body = {
+      email,
+      products: selectedProducts.map((p) => ({
+        productName: p.name,
+      })),
+    };
+
+    setLoading(true);
     try {
-      const response = await axios.post("/orders/cancel-detail", {
-        email,
-        products: selectedProducts,
+      const res = await fetch("http://localhost:8080/orders/cancel-detail", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
       });
 
-      if (response.data.msg === "Cancel orderItem successful") {
-        alert("취소되었습니다.");
-        window.location.reload();
-      } else {
-        alert("취소 실패: " + response.data.msg);
-      }
+      if (!res.ok) throw new Error("취소 요청 실패");
+
+      const data = await res.json();
+      alert(data.msg || "취소 요청 성공");
+      onClose();
+      window.location.reload();
     } catch (error) {
-      alert("서버 오류 발생");
+      alert("취소 요청 중 오류가 발생했습니다.");
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto relative p-6">
-        {/* 상단 */}
-        <div className="flex justify-between items-center border-b pb-4 mb-4">
-          <h2 className="text-xl font-bold">Order ID: {orderId}</h2>
-          <button onClick={onClose} className="text-2xl text-gray-600 hover:text-gray-800 font-bold">
-            ×
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        backgroundColor: "rgba(0,0,0,0.5)",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        zIndex: 999,
+      }}
+      onClick={onClose}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          backgroundColor: "#fff",
+          borderRadius: "1rem",
+          width: "600px",
+          maxHeight: "80vh",
+          overflowY: "auto",
+          padding: "1.5rem",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginBottom: "1rem",
+            alignItems: "center",
+          }}
+        >
+          <h2>Order ID: {orderId}</h2>
+          <button
+            onClick={onClose}
+            style={{
+              fontSize: "1.5rem",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+            }}
+            aria-label="닫기"
+          >
+            &times;
           </button>
         </div>
 
-        {/* 상품 리스트 */}
-        <ul className="divide-y divide-gray-200">
-          {products.map((product) => (
-            <li key={product.id} className="flex items-center py-4 gap-4">
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "1rem",
+          }}
+        >
+          {products.map(({ id, name, price, quantity, image }) => (
+            <div
+              key={id}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "1rem",
+                borderBottom: "1px solid #ccc",
+                paddingBottom: "0.5rem",
+              }}
+            >
+              <img
+                src={image}
+                alt={name}
+                style={{ width: "80px", height: "80px", objectFit: "cover" }}
+              />
+              <div style={{ flexGrow: 1 }}>
+                <div style={{ fontWeight: 600 }}>{name}</div>
+                <div>가격: {price.toLocaleString()} 원</div>
+                <div>수량: {quantity}</div>
+              </div>
               <input
                 type="checkbox"
-                checked={checkedItems.includes(product.id)}
-                onChange={() => toggleCheckbox(product.id)}
-                className="w-5 h-5"
+                checked={checkedIds.includes(id)}
+                onChange={() => toggleCheck(id)}
+                style={{ width: "1.2rem", height: "1.2rem" }}
+                disabled={loading}
               />
-              <img
-                src={product.image}
-                alt={product.name}
-                className="w-20 h-20 object-cover rounded border"
-              />
-              <div className="flex flex-col">
-                <span className="font-semibold">{product.name}</span>
-                <span className="text-sm text-gray-600">가격: ₩{product.price}</span>
-                <span className="text-sm text-gray-600">수량: {product.quantity}</span>
-              </div>
-            </li>
+            </div>
           ))}
-        </ul>
-
-        {/* 하단 버튼 */}
-        <div className="flex justify-end mt-6">
-          <button
-            onClick={handleCancel}
-            className="bg-black text-white py-2 px-6 rounded-lg font-semibold hover:bg-gray-800"
-          >
-            취소하기
-          </button>
         </div>
+
+        <button
+          onClick={handleCancel}
+          disabled={loading}
+          style={{
+            marginTop: "1rem",
+            alignSelf: "flex-end",
+            padding: "0.7rem 1.5rem",
+            backgroundColor: "#000",
+            color: "#fff",
+            border: "none",
+            borderRadius: "0.5rem",
+            fontWeight: "600",
+            cursor: loading ? "not-allowed" : "pointer",
+          }}
+        >
+          {loading ? "취소 중..." : "취소"}
+        </button>
       </div>
     </div>
   );

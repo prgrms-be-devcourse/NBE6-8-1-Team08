@@ -2,16 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import OrderList from '../../components/User/OrderList';
 import Summary from '../../components/User/Summary';
+import products from '../../resources/products';
+
 
 export default function ProductInfo() {
   const navigate = useNavigate(); 
 
-  const products = [
-    { PRODUCT_ID: 13, korName: '커피콩', engName: 'Ethiopia Yirgacheffe', price: '4500', imgUrl: '/resources/1.png' },
-    { PRODUCT_ID: 14, korName: '커피콩', engName: 'Columbia Bean', price: '50000', imgUrl: '/resources/2.png' },
-    { PRODUCT_ID: 15, korName: '커피콩', engName: 'Guatemala Antigua', price: '5200', imgUrl: '/resources/3.png' },
-    { PRODUCT_ID: 16, korName: '커피콩', engName: 'Serra do Caparaó', price: '53000', imgUrl: '/resources/4.png' },
-  ];
 
   const [cart, setCart] = useState({});
 

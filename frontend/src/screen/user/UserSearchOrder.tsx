@@ -21,31 +21,29 @@ export default function UserSearchOrder() {
       alert("이메일을 입력해주세요.");
       return;
     }
-
-    if (!validateEmail(email)) {
-      setIsValidEmail(false);
-      return;
-    }
-
+  
     try {
       const response = await fetch(
         `http://localhost:8080/orders/user/findorder?email=${encodeURIComponent(email.trim())}`
-        // 만약 백엔드가 `arg0`을 요구한다면 아래로 변경:
-        // `http://localhost:8080/orders/user/findorder?arg0=${encodeURIComponent(email.trim())}`
       );
-
+  
       if (!response.ok) {
         throw new Error("조회 실패");
       }
-
-      const data = await response.json(); // 필요 시 응답 데이터 활용
+  
+      const data = await response.json();
+  
+      // 조회 성공하면 프론트의 주문 리스트 페이지로 이동
 
       navigate(`/user/orderlist?username=${encodeURIComponent(email.trim())}`);
+
     } catch (error) {
       alert("해당 이메일로 주문을 찾을 수 없습니다.");
       console.error(error);
     }
   };
+  
+  
 
   return (
     <div className="flex justify-center items-center h-screen bg-[#474747]">
