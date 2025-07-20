@@ -1,5 +1,7 @@
 package com.gridsandcircles.domain.order.order.controller;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 import com.gridsandcircles.domain.order.order.dto.OrderCancelRequestDto;
 import com.gridsandcircles.domain.order.order.dto.OrderCancelResponseDto;
 import com.gridsandcircles.domain.order.order.dto.OrderRequestDto;
@@ -18,13 +20,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequiredArgsConstructor
 @RestController
@@ -35,6 +34,7 @@ public class OrderController {
   private final OrderService orderService;
 
   @GetMapping
+  @Operation(summary = "전체 주문 목록 조회")
   public ResponseEntity<ResultResponse<List<OrderResponseDto>>> getOrders() {
     List<OrderResponseDto> items = orderService.getOrders()
         .stream()
@@ -45,9 +45,7 @@ public class OrderController {
   }
 
   @PostMapping("/user/order")
-  @Operation(
-      summary = "고객 주문 등록"
-  )
+  @Operation(summary = "고객 주문 등록")
   @ApiResponses({
       @ApiResponse(
           responseCode = "200",
@@ -199,7 +197,7 @@ public class OrderController {
       )
   )
   public ResponseEntity<ResultResponse<OrderCancelResponseDto>> cancelOrderDetail(
-          @Valid @RequestBody OrderCancelRequestDto orderCancelRequestDto
+      @Valid @RequestBody OrderCancelRequestDto orderCancelRequestDto
   ) {
     List<String> productNames = orderCancelRequestDto.products().stream()
         .map(OrderCancelRequestDto.ProductRequestDto::productName)
