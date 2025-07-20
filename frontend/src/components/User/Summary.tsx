@@ -1,8 +1,30 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
-export default function Summary({ cart, products, onDecrease }) {
-  const navigate = useNavigate();
+type CartItem = {
+  PRODUCT_ID: number;
+  price: string;
+  count: number;
+};
+
+type Cart = {
+  [engName: string]: CartItem;
+};
+
+type Product = {
+  PRODUCT_ID: number;
+  engName: string;
+  price: string;
+  imgUrl: string;
+  korName?: string;
+};
+
+interface SummaryProps {
+  cart: Cart;
+  products: Product[];
+  onDecrease: (engName: string) => void;
+}
+
+export default function Summary({ cart, products, onDecrease }: SummaryProps) {
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
   const [zipcode, setZipcode] = useState('');
@@ -12,7 +34,7 @@ export default function Summary({ cart, products, onDecrease }) {
     zipcode: '',
   });
 
-  const validateEmail = (email) => {
+  const validateEmail = (email: string) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
   };
@@ -20,7 +42,7 @@ export default function Summary({ cart, products, onDecrease }) {
   const handleSubmit = async () => {
     const newErrors = { email: '', address: '', zipcode: '' };
     let hasError = false;
-  
+
     if (!email) {
       newErrors.email = '필수 입력값입니다';
       hasError = true;
@@ -28,37 +50,37 @@ export default function Summary({ cart, products, onDecrease }) {
       newErrors.email = '이메일 형식이 아닙니다';
       hasError = true;
     }
-  
+
     if (!address) {
       newErrors.address = '필수 입력값입니다';
       hasError = true;
     }
-  
+
     if (!zipcode) {
       newErrors.zipcode = '필수 입력값입니다';
       hasError = true;
     }
-  
+
     setErrors(newErrors);
     if (hasError) return;
-  
+
     const fullAddress = `${address} ${zipcode}`.trim();
-  
-   
-    const orderItems = Object.entries(cart).map(([engName, count]) => {
+
+    const orderItems = Object.entries(cart).map(([engName, item]) => {
+      const cartItem = item as CartItem;
       const product = products.find((p) => p.engName === engName);
       return {
-        productId: product?.PRODUCT_ID, 
-        count,
+        productId: cartItem.PRODUCT_ID,
+        count: cartItem.count,
       };
     });
-  
+
     const orderData = {
       email,
       address: fullAddress,
       orderItems,
     };
-  
+
     try {
       const response = await fetch('http://localhost:8080/orders/user/order', {
         method: 'POST',
@@ -67,35 +89,30 @@ export default function Summary({ cart, products, onDecrease }) {
         },
         body: JSON.stringify(orderData),
       });
-  
+
       if (!response.ok) throw new Error('주문 실패');
-  
+
       alert('결제가 완료되었습니다.');
-      window.location.href = 'http://localhost:5173';
+      window.location.href = 'http://localhost:5173'; // 홈으로 이동
     } catch (error) {
       alert('결제 요청 중 오류가 발생했습니다.');
       console.error(error);
     }
   };
-  
-  
-  
-  const renderLabel = (text, error) => (
+
+  const renderLabel = (text: string, error: string) => (
     <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.4rem' }}>
       <label style={{ color: '#484848', fontSize: '1.1rem', marginRight: '0.5rem' }}>
         {text}
       </label>
-      {error && (
-        <span style={{ color: 'red', fontSize: '0.9rem' }}>
-          {error}
-        </span>
-      )}
+      {error && <span style={{ color: 'red', fontSize: '0.9rem' }}>{error}</span>}
     </div>
   );
-  
-  const items = Object.entries(cart).map(([engName, count]) => {
+
+  const items = Object.entries(cart).map(([engName, item]) => {
+    const cartItem = item as CartItem;
     const product = products.find((p) => p.engName === engName);
-    return { engName, korName: product?.korName, count };
+    return { engName, korName: product?.korName, count: cartItem.count };
   });
 
   return (
@@ -237,11 +254,14 @@ export default function Summary({ cart, products, onDecrease }) {
             borderRadius: '0.5rem',
             fontSize: '1.2rem',
             fontWeight: 'bold',
-            border: 'none',
             cursor: 'pointer',
+            transition: 'background-color 0.3s',
+            border: 'none',
           }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#3a3a3a')}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#484848')}
         >
-          결제하기
+          주문하기
         </button>
       </div>
     </div>
