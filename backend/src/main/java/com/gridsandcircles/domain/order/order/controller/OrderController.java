@@ -1,5 +1,7 @@
 package com.gridsandcircles.domain.order.order.controller;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 import com.gridsandcircles.domain.order.order.dto.OrderCancelRequestDto;
 import com.gridsandcircles.domain.order.order.dto.OrderCancelResponseDto;
 import com.gridsandcircles.domain.order.order.dto.OrderRequestDto;
@@ -18,13 +20,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequiredArgsConstructor
 @RestController
@@ -44,10 +43,9 @@ public class OrderController {
     return ResponseEntity.ok().body(new ResultResponse<>("Get order successful", items));
   }
 
+
   @PostMapping("/user/order")
-  @Operation(
-      summary = "고객 주문 등록"
-  )
+  @Operation(summary = "고객 주문 등록")
   @ApiResponses({
       @ApiResponse(
           responseCode = "200",
