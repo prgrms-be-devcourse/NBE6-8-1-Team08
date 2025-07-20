@@ -1,16 +1,80 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import axios from "axios";
 
 export default function AdminRegisterForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
 
+  const [usernameError, setUsernameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [repeatError, setRepeatError] = useState("");
+
+  const validate = () => {
+    let isValid = true;
+
+    if (!username.trim()) {
+      setUsernameError("필수 입력값입니다");
+      isValid = false;
+    } else if (username.length < 4 || username.length > 10) {
+      setUsernameError("4~10자리여야 합니다");
+      isValid = false;
+    } else {
+      setUsernameError("");
+    }
+
+    if (!password.trim()) {
+      setPasswordError("필수 입력값입니다");
+      isValid = false;
+    } else if (password.length < 8 || password.length > 20) {
+      setPasswordError("8~20자리여야 합니다");
+      isValid = false;
+    } else {
+      setPasswordError("");
+    }
+
+    if (!repeatPassword.trim()) {
+      setRepeatError("필수 입력값입니다");
+      isValid = false;
+    } else if (repeatPassword !== password) {
+      setRepeatError("비밀번호가 일치하지 않습니다");
+      isValid = false;
+    } else {
+      setRepeatError("");
+    }
+
+    return isValid;
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!validate()) return;
+
+    try {
+      const response = await axios.post("http://localhost:8080/admin/signup", {
+        adminId: username,
+        inputPassword: password,
+        confirmPassword: repeatPassword,
+      }, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      alert(response.data.msg);
+    } catch (error: any) {
+      if (error.response) {
+        alert(error.response.data.msg);
+      } else {
+        alert("서버와 연결할 수 없습니다.");
+      }
+    }
+  };
+
   return (
     <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        alert("회원가입 시도");
-      }}
+      onSubmit={handleSubmit}
       style={{
         backgroundColor: "#ffffff",
         flex: 1,
@@ -33,17 +97,17 @@ export default function AdminRegisterForm() {
         Register with your e-mail
       </h2>
 
-      {/* USERNAME */}
-      <div
-        style={{
+      <div style={{ width: "90%", marginBottom: "0.25rem", alignSelf: "flex-start" }}>
+        <span style={{
           color: "#B7B7B7",
-          fontWeight: "600",
-          alignSelf: "flex-start",
-          marginBottom: "0.25rem",
+          fontWeight: 600,
           fontSize: "0.95rem",
-        }}
-      >
-        USERNAME (*)
+        }}>USERNAME (*)</span>
+        {usernameError && (
+          <span style={{ color: "red", fontSize: "0.85rem", marginLeft: "0.5rem" }}>
+            {usernameError}
+          </span>
+        )}
       </div>
       <input
         type="text"
@@ -62,17 +126,17 @@ export default function AdminRegisterForm() {
         }}
       />
 
-      {/* PASSWORD */}
-      <div
-        style={{
+      <div style={{ width: "90%", marginBottom: "0.25rem", alignSelf: "flex-start" }}>
+        <span style={{
           color: "#B7B7B7",
-          fontWeight: "600",
-          alignSelf: "flex-start",
-          marginBottom: "0.25rem",
+          fontWeight: 600,
           fontSize: "0.95rem",
-        }}
-      >
-        PASSWORD (*)
+        }}>PASSWORD (*)</span>
+        {passwordError && (
+          <span style={{ color: "red", fontSize: "0.85rem", marginLeft: "0.5rem" }}>
+            {passwordError}
+          </span>
+        )}
       </div>
       <input
         type="password"
@@ -92,17 +156,17 @@ export default function AdminRegisterForm() {
         }}
       />
 
-      {/* REPEAT PASSWORD */}
-      <div
-        style={{
+      <div style={{ width: "90%", marginBottom: "0.25rem", alignSelf: "flex-start" }}>
+        <span style={{
           color: "#B7B7B7",
-          fontWeight: "600",
-          alignSelf: "flex-start",
-          marginBottom: "0.25rem",
+          fontWeight: 600,
           fontSize: "0.95rem",
-        }}
-      >
-        REPEAT PASSWORD (*)
+        }}>REPEAT PASSWORD (*)</span>
+        {repeatError && (
+          <span style={{ color: "red", fontSize: "0.85rem", marginLeft: "0.5rem" }}>
+            {repeatError}
+          </span>
+        )}
       </div>
       <input
         type="password"
