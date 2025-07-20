@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import OrderList from '../../components/User/OrderList';
 import Summary from '../../components/User/Summary';
-import products from '../../resources/products';
+import products from '../../../public/resources/products';
 
 
 export default function ProductInfo() {
