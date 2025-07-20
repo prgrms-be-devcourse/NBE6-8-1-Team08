@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import OrderDetailPopup from "../../components/OrderDetailPopup";
-import products from "../../resources/products";
+import products from "../../../public/resources/products";
 
 interface OrderItem {
   orderItemId: number;
@@ -85,7 +85,7 @@ export default function UserOrderList() {
     setFilteredOrders(filtered);
   }, [orders, statusFilter, dateFilter]);
 
-  // 체크박스 토글 (취소된 주문은 선택 못 하게)
+  // 체크박스 토글 
   const toggleSelect = (orderId: number) => {
     const order = orders.find((o) => o.orderId === orderId);
     if (order?.isCanceled) return; // 취소된 주문 선택 불가
@@ -97,7 +97,7 @@ export default function UserOrderList() {
     );
   };
 
-  // 주문 행 클릭 시 팝업 열기 (취소된 주문은 팝업 안 띄움)
+  // 주문 행 클릭 시 팝업 열기 
   const handleRowClick = (order: Order) => {
     if (order.isCanceled) return;
 
@@ -392,10 +392,10 @@ export default function UserOrderList() {
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "flex-start", // 왼쪽 정렬로 변경
+                  justifyContent: "flex-start",
                   fontWeight: "bold",
                   userSelect: "none",
-                  paddingLeft: "0.5rem", // 필요시 약간 왼쪽 여백 추가
+                  paddingLeft: "0.5rem", 
                 }}
                 onClick={(e) => e.stopPropagation()}
               >

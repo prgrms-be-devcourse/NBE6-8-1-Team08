@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate  } from 'react-router-dom';
 import Choice from './screen/choice';
 
 import UserMain from './screen/user/UserMain'
@@ -29,6 +29,7 @@ function App() {
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/register" element={<AdminRegister />} />
         <Route path="/admin/adminorderpage" element={<AdminOrderList />} />
+        <Route path="*" element={<Navigate to="/admin/login" />} />
       </Routes>
     </Router>
 

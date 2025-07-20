@@ -67,35 +67,72 @@ export default function OrderDetailPopup({
     }
   };
 
+  // 스타일 변수
+  const popupBackgroundStyle = {
+    position: "fixed" as const,
+    top: 0,
+    left: 0,
+    width: "100vw",
+    height: "100vh",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 999,
+  };
+
+  const popupBoxStyle = {
+    backgroundColor: "#fff",
+    borderRadius: "1rem",
+    width: "600px",
+    maxHeight: "80vh",
+    overflowY: "auto",
+    padding: "1.5rem",
+    display: "flex",
+    flexDirection: "column" as const,
+  };
+
+  const closeButtonStyle = {
+    fontSize: "1.5rem",
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+  };
+
+  const productItemStyle = {
+    display: "flex",
+    alignItems: "center",
+    gap: "1rem",
+    borderBottom: "1px solid #ccc",
+    paddingBottom: "0.5rem",
+  };
+
+  const productImageStyle = {
+    width: "80px",
+    height: "80px",
+    objectFit: "cover" as const,
+  };
+
+  const checkboxStyle = {
+    width: "1.2rem",
+    height: "1.2rem",
+  };
+
+  const cancelButtonStyle = {
+    marginTop: "1rem",
+    alignSelf: "flex-end",
+    padding: "0.7rem 1.5rem",
+    backgroundColor: "#000",
+    color: "#fff",
+    border: "none",
+    borderRadius: "0.5rem",
+    fontWeight: "600",
+    cursor: loading ? "not-allowed" : "pointer",
+  };
+
   return (
-    <div
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100vw",
-        height: "100vh",
-        backgroundColor: "rgba(0,0,0,0.5)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        zIndex: 999,
-      }}
-      onClick={onClose}
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          backgroundColor: "#fff",
-          borderRadius: "1rem",
-          width: "600px",
-          maxHeight: "80vh",
-          overflowY: "auto",
-          padding: "1.5rem",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+    <div style={popupBackgroundStyle} onClick={onClose}>
+      <div style={popupBoxStyle} onClick={(e) => e.stopPropagation()}>
         <div
           style={{
             display: "flex",
@@ -105,16 +142,7 @@ export default function OrderDetailPopup({
           }}
         >
           <h2>Order ID: {orderId}</h2>
-          <button
-            onClick={onClose}
-            style={{
-              fontSize: "1.5rem",
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-            }}
-            aria-label="닫기"
-          >
+          <button onClick={onClose} style={closeButtonStyle} aria-label="닫기">
             &times;
           </button>
         </div>
@@ -127,21 +155,8 @@ export default function OrderDetailPopup({
           }}
         >
           {products.map(({ id, name, price, quantity, image }) => (
-            <div
-              key={id}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "1rem",
-                borderBottom: "1px solid #ccc",
-                paddingBottom: "0.5rem",
-              }}
-            >
-              <img
-                src={image}
-                alt={name}
-                style={{ width: "80px", height: "80px", objectFit: "cover" }}
-              />
+            <div key={id} style={productItemStyle}>
+              <img src={image} alt={name} style={productImageStyle} />
               <div style={{ flexGrow: 1 }}>
                 <div style={{ fontWeight: 600 }}>{name}</div>
                 <div>가격: {price.toLocaleString()} 원</div>
@@ -151,7 +166,7 @@ export default function OrderDetailPopup({
                 type="checkbox"
                 checked={checkedIds.includes(id)}
                 onChange={() => toggleCheck(id)}
-                style={{ width: "1.2rem", height: "1.2rem" }}
+                style={checkboxStyle}
                 disabled={loading}
               />
             </div>
@@ -161,17 +176,7 @@ export default function OrderDetailPopup({
         <button
           onClick={handleCancel}
           disabled={loading}
-          style={{
-            marginTop: "1rem",
-            alignSelf: "flex-end",
-            padding: "0.7rem 1.5rem",
-            backgroundColor: "#000",
-            color: "#fff",
-            border: "none",
-            borderRadius: "0.5rem",
-            fontWeight: "600",
-            cursor: loading ? "not-allowed" : "pointer",
-          }}
+          style={cancelButtonStyle}
         >
           {loading ? "취소 중..." : "취소"}
         </button>
